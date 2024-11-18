@@ -1,12 +1,12 @@
 import random
 from faker import Faker
-import mysql.connector
+import pymysql
 from config import db_config
 
 fake = Faker('pt_PT')
 
 def create_connection():
-    return mysql.connector.connect(**db_config)
+    return pymysql.connect(**db_config)
 
 def get_schools_for_bolsa(bolsa_id):
     """Fetch schools linked to a specific bolsa."""
@@ -26,11 +26,13 @@ def add_random_users(num_users=25):
         nome = fake.name()
         contacto = fake.phone_number()
         deficiencia = random.choice(['não', 'sim'])
-        avaliacao_curricular = random.randint(0, 20)
-        prova_de_conhecimentos = random.randint(0, 20)
+        avaliacao_curricular = random.randint(9.5, 20)
+        prova_de_conhecimentos = random.randint(9.5, 20)
         nota_final = round(0.3 * avaliacao_curricular + 0.7 * prova_de_conhecimentos, 2)
         estado = 'livre'
         observacoes = fake.text(max_nb_chars=200)
+        NIF = random.randint(100000000, 999999999)  # Generate a 9-digit NIF
+        local_prova = random.choice(['Ilha Terceira', 'Ilha de S.Miguel', 'Ilha do Faial', 'Ilha das Flores', 'Ilha do Corvo', 'Ilha do Pico','Ilha da Graciosa','Ilha de S.Jorge','Ilha de Santa Maria'])
 
         bolsa_ids = random.sample(range(1, num_bolsas + 1), k=random.randint(1, num_bolsas))
         contrato_id = random.randint(1, num_contratos)
@@ -67,11 +69,13 @@ def add_random_users(num_users=25):
             # Insert into Users table
             user_query = """
             INSERT INTO Users (nome, contacto, deficiencia, avaliacao_curricular, 
-                               prova_de_conhecimentos, nota_final, estado, observacoes)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                               prova_de_conhecimentos, nota_final, estado, observacoes,
+                               NIF, local_prova)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             cursor.execute(user_query, (nome, contacto, deficiencia, str(avaliacao_curricular), 
-                                         str(prova_de_conhecimentos), nota_final, estado, observacoes))
+                                         str(prova_de_conhecimentos), nota_final, estado, 
+                                         observacoes, NIF, local_prova))
             user_id = cursor.lastrowid
 
             # Insert into userbolsas table
@@ -102,4 +106,4 @@ def add_random_users(num_users=25):
             connection.close()
 
 if __name__ == '__main__':
-    add_random_users(3)
+    add_random_users(50)

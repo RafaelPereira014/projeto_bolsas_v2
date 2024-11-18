@@ -4,7 +4,6 @@ from mailbox import Message
 import os
 import os
 from flask import request, redirect, url_for, flash
-from django import db
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
 import pymysql
 from werkzeug.security import generate_password_hash
