@@ -1,14 +1,14 @@
 import csv
-import mysql.connector
+import pymysql
 from config import db_config  # Adjust import according to your database config
 
 def connect_to_database():
     """Establishes a connection to the MySQL database."""
-    return mysql.connector.connect(**db_config)
+    return pymysql.connect(**db_config)
 
 def execute_query(query, params):
     connection = connect_to_database()  # Assuming you have this function to connect to your database
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
     try:
         cursor.execute(query, params)
         results = cursor.fetchall()  # Fetch all results
@@ -330,7 +330,7 @@ def get_uploaded_documents(bolsa_id):
 
 def process_csv_and_update_db(csv_file_path):
     connection = connect_to_database()
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
 
     try:
         with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:

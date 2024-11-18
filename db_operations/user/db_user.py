@@ -1,9 +1,9 @@
-import mysql.connector
+import pymysql
 from config import db_config  # Adjust import according to your database config
 
 def connect_to_database():
     """Establishes a connection to the MySQL database."""
-    return mysql.connector.connect(**db_config)
+    return pymysql.connect(**db_config)
 
 def get_user_info(user_ids):
     connection = connect_to_database()

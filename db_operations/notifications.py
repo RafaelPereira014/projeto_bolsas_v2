@@ -6,13 +6,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
 import smtplib
-import mysql
+
+import pymysql
 from config import db_config  # Import the database configuration
 
 
 def connect_to_database():
     """Establishes a connection to the MySQL database."""
-    return mysql.connector.connect(**db_config)
+    return pymysql.connect(**db_config)
 
 
 def send_email(to_emails, subject, message, attachments=[]):

@@ -1,17 +1,18 @@
 # db_selection.py
 
-import mysql.connector
+
+import pymysql
 from config import db_config  # Adjust import according to your database config
 
 def connect_to_database():
     """Establishes a connection to the MySQL database."""
-    return mysql.connector.connect(**db_config)
+    return pymysql.connect(**db_config)
 
 
 # Função para executar a consulta SQL
 def execute_query(query, params):
     conn = connect_to_database()  # Criar a conexão
-    cursor = conn.cursor(dictionary=True)  # Para retornar resultados como dicionário
+    cursor = conn.cursor(pymysql.cursors.DictCursor)  # Para retornar resultados como dicionário
     
     try:
         cursor.execute(query, params)  # Executar a query com os parâmetros
@@ -94,7 +95,7 @@ def get_candidates_by_bolsa(bolsa_id, contrato_tipo):
     conn = None
     try:
         conn = connect_to_database()  # Assuming you have a function to create a DB connection
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         
         # Call the stored procedure
         cursor.callproc('GetCandidatesByBolsa', (bolsa_id, contrato_tipo))

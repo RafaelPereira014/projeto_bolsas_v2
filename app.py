@@ -4,14 +4,12 @@ from mailbox import Message
 import os
 import os
 from flask import request, redirect, url_for, flash
-import smtplib
 from django import db
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
+import pymysql
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from config import db_config
-import mysql.connector
-from mysql.connector import Error
 from db_operations.notifications import send_email_on_selection
 from db_operations.selection.db_selection import *
 from db_operations.consulting.db_consulting import *
@@ -37,13 +35,13 @@ def is_logged_in():
 # Função para executar a consulta SQL
 def execute_query(query, params):
     conn = create_connection()  # Criar a conexão
-    cursor = conn.cursor(dictionary=True)  # Para retornar resultados como dicionário
+    cursor = conn.cursor(pymysql.cursors.DictCursor)  # Para retornar resultados como dicionário
     
     try:
         cursor.execute(query, params)  # Executar a query com os parâmetros
         results = cursor.fetchall()  # Obter todos os resultados da consulta
         return results
-    except mysql.connector.Error as err:
+    except pymysql.Error as err:
         print(f"Erro: {err}")
         return None
     finally:
@@ -54,15 +52,14 @@ def create_connection():
     connection = None
     try:
         # Use the config values from the db_config
-        connection = mysql.connector.connect(
+        connection = pymysql.connect(
             host=db_config['host'],
             user=db_config['user'],
             password=db_config['password'],
             database=db_config['db']
         )
-        if connection.is_connected():
-            print("Connection to MySQL DB successful")
-    except Error as e:
+        
+    except pymysql.Error as e:
         print(f"The error '{e}' occurred")
     return connection
 
@@ -79,7 +76,7 @@ def login():
         password = request.form['password']
         
         conn = create_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         
         # Query to find the user
         query = "SELECT * FROM Admin WHERE email = %s"
