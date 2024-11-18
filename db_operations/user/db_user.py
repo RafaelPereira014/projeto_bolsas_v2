@@ -45,13 +45,13 @@ def user_infos(user_id):
 
     try:
         query = """
-        SELECT u.id AS candidato_id, u.nome, u.contacto, u.avaliacao_curricular, 
-               u.prova_de_conhecimentos, u.nota_final, ub.contrato_id, u.estado,
-               u.distribuicao, u.deficiencia, d.file_name, d.upload_date
-        FROM Users u
-        JOIN userbolsas ub ON u.id = ub.user_id
+        SELECT u.id AS candidato_id, u.nome, u.contacto, u.deficiencia, 
+               u.avaliacao_curricular, u.prova_de_conhecimentos, u.nota_final, 
+               u.estado, u.observacoes, u.distribuicao, u.NIF, u.local_prova,
+               d.file_name, d.upload_date
+        FROM users u
         LEFT JOIN documents d ON u.id = d.user_id  -- Use LEFT JOIN to include users with no documents
-        WHERE u.id = %s ORDER BY u.nota_final DESC
+        WHERE u.id = %s
         """
         cursor.execute(query, (user_id,))
         result = cursor.fetchall()  # Fetch all results for the user
@@ -62,22 +62,24 @@ def user_infos(user_id):
                 "id": result[0][0],
                 "nome": result[0][1],
                 "contacto": result[0][2],
-                "avaliacao_curricular": result[0][3],
-                "prova_de_conhecimentos": result[0][4],
-                "nota_final": result[0][5],
-                "contrato_id": result[0][6],
+                "deficiencia": result[0][3],  # Include deficiencia
+                "avaliacao_curricular": result[0][4],
+                "prova_de_conhecimentos": result[0][5],
+                "nota_final": result[0][6],
                 "estado": result[0][7],
-                "distribuicao": result[0][8],  # Include distribuicao
-                "deficiencia": result[0][9],  # Include deficiencia
+                "observacoes": result[0][8],  # Include observacoes
+                "distribuicao": result[0][9],
+                "NIF": result[0][10],
+                "local_prova": result[0][11],
                 "documentos": []  # Initialize an empty list for documents
             }
 
             # Populate the documentos list with file names and upload dates
             for row in result:
-                if row[10]:  # Check if file_name is not None
+                if row[12]:  # Check if file_name is not None
                     user_info["documentos"].append({
-                        "file_name": row[10],
-                        "upload_date": row[11]
+                        "file_name": row[12],
+                        "upload_date": row[13]
                     })
 
             return user_info
