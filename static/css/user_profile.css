@@ -1,0 +1,88 @@
+/* Updated table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for better aesthetics */
+    border-radius: 8px;
+    overflow: hidden; /* Ensures borders are properly rounded */
+}
+
+th, td {
+    border: 1px solid #dfe6e9;
+    padding: 12px;
+    text-align: left;
+    font-size: 1rem;
+    background-color: #f8f9fa; /* Light grey background for better readability */
+}
+
+th {
+    background-color: #007bff; /* Blue background for headers */
+    color: white; /* White text for headers */
+    text-transform: uppercase; /* Uppercase text for headers */
+    font-weight: bold;
+    padding: 15px; /* Added more padding for larger headers */
+    letter-spacing: 0.05em; /* Slight letter spacing for a modern look */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f1f2f6; /* Alternating row colors for readability */
+}
+
+tbody tr:hover {
+    background-color: #d6eaf8; /* Light blue background on hover */
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+td {
+    padding: 15px; /* Added more padding for better spacing */
+    vertical-align: middle; /* Aligns text in the center of each row */
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive table for smaller screens */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+
+    th {
+        display: none; /* Hide headers */
+    }
+
+    td {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 5px;
+        border: none;
+        border-bottom: 1px solid #dfe6e9;
+    }
+
+    td::before {
+        content: attr(data-label); /* Show labels before each cell */
+        font-weight: bold;
+        color: #007bff;
+        text-transform: uppercase;
+        padding-right: 10px;
+    }
+
+    tbody tr {
+        margin-bottom: 10px; /* Space between rows */
+        border-bottom: 2px solid #dfe6e9;
+    }
+}

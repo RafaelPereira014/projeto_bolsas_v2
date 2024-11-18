@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/GBI.png') }}" type="image/png"> <!-- Favicon -->
+
+    <title>Página Principal</title>
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plataforma de Gestão das Bolsas de Ilha - <span>Procedimento concursal centralizado SER</span></h1>
+            
+        </header>
+
+        <div class="sidebar">
+            <ul>
+                <li><a href="/mainpage">Página Principal</a></li>
+                <li><a href="/selectionpage">Inserção de vagas</a></li>
+                <li><a href="/consulta">Lista única Ordenação Final</a></li>
+            </ul>
+            <button class="toggle-button">Bolsas de Ilha</button>
+            <ul class="bolsas-menu" style="display:none;">
+                <li><a href="/Bolsas/SaoMiguel">Bolsa de Ilha São Miguel</a></li>
+                <li><a href="/Bolsas/Terceira">Bolsa de Ilha Terceira</a></li>
+                <li><a href="/Bolsas/SantaMaria">Bolsa de Ilha Santa Maria</a></li>
+                <li><a href="/Bolsas/Faial">Bolsa de Ilha Faial</a></li>
+                <li><a href="/Bolsas/Pico">Bolsa de Ilha Pico</a></li>
+                <li><a href="/Bolsas/SaoJorge">Bolsa de Ilha São Jorge</a></li>
+                <li><a href="/Bolsas/Graciosa">Bolsa de Ilha Graciosa</a></li>
+                <li><a href="/Bolsas/Flores">Bolsa de Ilha Flores</a></li>
+                <li><a href="/Bolsas/Corvo">Bolsa de Ilha Corvo</a></li>
+            </ul>
+            <ul>
+                <li><a href="/minhaconta">Minha conta</a></li>
+                <li><a href="/add_user">Adicionar candidato</a></li>
+                <li><a href="/import_users_data">Import data</a></li>
+                <li><a href="/logout">Terminar sessão</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <h2>Bem-vindo à Página Principal</h2>
+
+            <div class="overview">
+                <h3>Estatísticas</h3>
+                <ul>
+                    <li>Número de candidatos: <strong>{{ no_users }}</strong></li>
+                    <li>Número de bolsas: <strong>{{ no_bolsas }}</strong></li>
+                    <li>Número de escolas: <strong>{{ no_escolas }}</strong></li>
+                    <li>Colocados: <strong>{{ no_colocados }}</strong></li>
+                </ul>
+            </div>
+
+            <h3>Atividades Recentes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Atividade</th>
+                        <th>Data</th>
+                        <th>Utilizador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Add recent activity data here -->
+                    
+                </tbody>
+            </table>
+        </div>
+
+        
+    </div>
+
+    <script>
+        document.querySelector('.toggle-button').addEventListener('click', function() {
+            const bolsasMenu = document.querySelector('.bolsas-menu');
+            bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
+        });
+    </script>
+</body>
+</html>

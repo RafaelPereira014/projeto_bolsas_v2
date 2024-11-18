@@ -1,0 +1,186 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e8f0fe; /* Soft light blue background */
+    color: #343a40; /* Dark gray text */
+}
+
+/* Layout Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    background-color: #007bff; /* Bright blue for header */
+    color: #fff;
+    padding: 15px 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #343a40; /* Dark gray for sidebar */
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    top: 60px;
+    left: 0;
+    overflow-y: auto;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 200;
+}
+
+.sidebar h2 {
+    color: #ffffff;
+    font-size: 1.6rem; /* Slightly larger */
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600; /* Bolder header */
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin: 15px 0;
+}
+
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1.1rem;
+    padding: 12px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative; /* For pseudo-element */
+}
+
+.sidebar ul li a:hover {
+    color: #f8f9fa; /* Light gray hover */
+    background-color: #0056b3; /* Darker blue hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul li a.active {
+    background-color: #007bff;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2); /* Active shadow */
+}
+
+/* Sidebar for smaller screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .sidebar ul li a {
+        padding: 10px 15px;
+    }
+}
+/* Content */
+.content {
+    margin-left: 260px; /* Adjust to sidebar width */
+    padding: 100px 40px 40px ;
+    flex: 1;
+    background-color: #ffffff; /* White content area */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.content h2 {
+    font-size: 1.8rem;
+    color: #343a40; /* Dark text for headers */
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff; /* Bright blue underline */
+    padding-bottom: 10px;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    table-layout: fixed;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    background-color: #fafafa;
+    word-wrap: break-word;
+}
+
+th {
+    background-color: #007bff; /* Bright blue for header */
+    color: #fff;
+    font-weight: bold;
+}
+
+td {
+    color: #343a40;
+    border-bottom: 1px solid #eaeaea;
+}
+
+tr:hover td {
+    background-color: #e3f2fd; /* Light blue hover effect */
+    transition: background-color 0.3s ease;
+}
+
+
+
+
+/* Bolsas Menu */
+.bolsas-menu {
+    display: none;
+    padding-left: 0;
+}
+
+.bolsas-menu li {
+    margin: 10px 0;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-align: left;
+    width: 100%;
+}
+
+.toggle-button:hover {
+    background-color: #0056b3;
+    color: white;
+}
+

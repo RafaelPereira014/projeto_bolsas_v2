@@ -1,0 +1,82 @@
+/* Login Form Styles */
+body {
+    background-color: #f4f7fa; /* Light gray background for contrast */
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+}
+
+.login-form {
+    background-color: white; /* White background for the form */
+    padding: 40px;
+    border-radius: 12px; /* More pronounced rounded corners */
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    width: 350px; /* Slightly wider form */
+    transition: transform 0.3s ease; /* Subtle hover effect */
+}
+
+.login-form:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 30px; /* Space below the title */
+    color: #2c3e50; /* Darker text color */
+    font-size: 1.8rem; /* Larger font for the title */
+    font-weight: 600; /* Bold title */
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%; /* Full width inputs */
+    padding: 12px; /* More padding for comfort */
+    margin: 15px 0; /* Space between inputs */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 8px; /* Rounded input corners */
+    font-size: 16px; /* Standard font size */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle shadow effect */
+    outline: none; /* Remove default outline */
+}
+
+.login-form button {
+    width: 100%; /* Full width button */
+    padding: 12px; /* Button padding */
+    background-color: #007bff; /* Bright blue background */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Standard font size for button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.login-form button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+.login-form p {
+    text-align: center; /* Centered text */
+    margin-top: 25px; /* Space above */
+    color: #666; /* Softer text color */
+}
+
+.login-form a {
+    color: #007bff; /* Link color */
+    text-decoration: none; /* No underline */
+}
+
+.login-form a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
