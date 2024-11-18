@@ -328,40 +328,52 @@ def get_uploaded_documents(bolsa_id):
     # Format the documents into a list of dictionaries
     return [{'filename': doc[0]} for doc in documents]
 
-# Process CSV and update the database
 def process_csv_and_update_db(csv_file_path):
     connection = connect_to_database()
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
 
     try:
         with open(csv_file_path, mode='r', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile, delimiter=';')  # CSV uses ';' as the delimiter
             for row in reader:
-                nif = row["Nif"]
-                prova = row["prova_de_conhecimentos"]
-                avaliacao = row["avaliacao_curricular"]
-                nota = row["nota_final"]
+                nif = row["NIF"]
+                prova = row["Prova"]
+                avaliacao = row["Avaliacao"]
+                nota = row["Nota_Final"]
 
                 # Check if the Nif exists in the database
                 cursor.execute("SELECT * FROM users WHERE NIF = %s", (nif,))
                 user = cursor.fetchone()
 
                 if user:  # If the Nif is found
+                    print(f"User found: {user}")  # Debug: print the user record
+
                     # Check for missing fields and update only if necessary
                     updates = []
                     params = []
 
-                    if not user["prova_de_conhecimentos"] and prova:
+                    # Debug: Print initial values
+                    print(f"Initial values: prova_de_conhecimentos={user['prova_de_conhecimentos']}, "
+                          f"avaliacao_curricular={user['avaliacao_curricular']}, nota_final={user['nota_final']}")
+
+                    # Check if prova_de_conhecimentos is missing or is 0
+                    if user["prova_de_conhecimentos"] in (None, "", 0) and prova:
                         updates.append("prova_de_conhecimentos = %s")
                         params.append(prova)
 
-                    if not user["avaliacao_curricular"] and avaliacao:
+                    # Check if avaliacao_curricular is missing
+                    if user["avaliacao_curricular"] in (None, "", 0) and avaliacao:
                         updates.append("avaliacao_curricular = %s")
                         params.append(avaliacao)
 
-                    if not user["nota_final"] and nota:
+                    # Check if nota_final is missing
+                    if user["nota_final"] in (None, "", 0) and nota:
                         updates.append("nota_final = %s")
                         params.append(nota)
+
+                    # Debug: Print updates and params
+                    print(f"Updates to apply: {updates}")
+                    print(f"Params to apply: {params}")
 
                     if updates:
                         # Update the user's record
