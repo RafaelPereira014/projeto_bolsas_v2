@@ -5,6 +5,13 @@ import os
 import os
 from flask import request, redirect, url_for, flash
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
+from flask import request, send_file
+from flask import render_template, request, send_file
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+import io
+
 import pymysql
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -613,7 +620,7 @@ def bolsa_sao_miguel():
 
     return render_template('/Bolsas/SaoMiguel.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
-@app.route('/Bolsas/Terceira')
+@app.route('/Bolsas/Terceira', methods=['GET', 'POST'])
 def bolsa_terceira():
     bolsa_id = 2
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
@@ -650,7 +657,67 @@ def bolsa_terceira():
         'has_next': page < total_pages
     }
 
+    # Generate PDF when requested
+    if request.args.get('download_pdf') == 'true':
+        # Create a PDF using ReportLab
+        pdf_io = io.BytesIO()
+        c = canvas.Canvas(pdf_io, pagesize=letter)
+
+        # Set up font and other settings
+        c.setFont("Helvetica", 10)
+        width, height = letter
+
+        # Start writing content on the PDF
+        y_position = height - 40  # Start from the top of the page
+
+        # Add Title
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(30, y_position, "Bolsas - Terceira ")
+        y_position -= 20
+
+        # Table Headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        col_widths = [150, 120, 120, 80, 180]
+        
+        # Draw table headers
+        for i, header in enumerate(headers):
+            c.setFont("Helvetica-Bold", 10)
+            c.setFillColor(colors.black)
+            c.drawString(30 + sum(col_widths[:i]), y_position, header)
+        
+        # Draw a line under the headers
+        y_position -= 10
+        c.line(30, y_position, width - 30, y_position)
+        y_position -= 10
+
+        # Add user info rows
+        for user in paginated_user_info:
+            row_data = [
+                user['nome'], 
+                str(user['avaliacao_curricular']), 
+                str(user['prova_de_conhecimentos']), 
+                str(user['nota_final']),
+                ", ".join([escola['nome'] for escola in escolas_bolsa if escola['user_id'] == user['id']])
+            ]
+
+            for i, data in enumerate(row_data):
+                c.setFont("Helvetica", 10)
+                c.drawString(30 + sum(col_widths[:i]), y_position, data)
+            
+            y_position -= 15
+            if y_position < 40:  # If we reach near the bottom, create a new page
+                c.showPage()
+                y_position = height - 40
+
+        # Save the PDF
+        c.save()
+
+        # Send the PDF as a response
+        pdf_io.seek(0)
+        return send_file(pdf_io, mimetype='application/pdf', as_attachment=True, download_name='bolsa_terceira.pdf')
+
     return render_template('/Bolsas/Terceira.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
+
 
 @app.route('/Bolsas/SantaMaria')
 def bolsa_santa_maria():

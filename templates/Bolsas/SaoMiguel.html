@@ -67,6 +67,8 @@
                     {% endfor %}
                 </ul>
             </div>
+
+            <button id="generate-pdf" class="generate-pdf-btn">Gerar PDF</button>
             
             <table>
                 <thead>
@@ -297,4 +299,57 @@
         });
     });
 </script>
+<script>
+    document.getElementById('generate-pdf').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+    
+        // Table header
+        const header = ['Nome candidato', 'Prova de Conhecimentos', 'Avaliação Curricular', 'Classificação final', 'Bolsa de Ilha Terceira', 'Escolas e Prioridades', 'CTFP'];
+        let tableData = [];
+    
+        // Loop through the table rows
+        const rows = document.querySelectorAll('table tbody tr');
+    
+        const fetchPromises = Array.from(rows).map(row => {
+            const userId = row.querySelector('button').getAttribute('onclick').match(/showEscolasPopup\((\d+)/)[1]; // Extract userId
+            const rowData = Array.from(row.querySelectorAll('td'))
+                .slice(1, 7) // Get columns 1–5
+                .map(cell => cell.innerText);
+    
+            // Fetch schools and priorities for the user
+            return fetch(`/view_escolas/${userId}/1`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length) {
+                        const escolas = data.map(escola => `${escola.escola_nome} (Prioridade: ${escola.escola_priority_id})`).join('; ');
+                        rowData.push(escolas); // Add schools and priorities to column 6
+                    } else {
+                        rowData.push("Nenhuma escola encontrada."); // Fallback for column 6
+                    }
+                    rowData.push(row.querySelectorAll('td')[6].innerText); // Add CTFP column data
+                    tableData.push(rowData); // Add the complete row to tableData
+                });
+        });
+    
+        // Wait for all fetch requests to complete
+        Promise.all(fetchPromises).then(() => {
+            // Add header and data to the PDF using autoTable
+            doc.autoTable({
+                head: [header],
+                body: tableData,
+                startY: 20, // Starts drawing the table 20 units from the top
+                theme: 'grid', // Grid style for the table
+                headStyles: {
+                    fillColor: [22, 160, 133] // Green color for header
+                }
+            });
+    
+            // Save the PDF file
+            doc.save('table_data.pdf');
+        });
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.24/jspdf.plugin.autotable.min.js"></script>
 </html>

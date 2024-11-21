@@ -66,6 +66,8 @@
                     {% endfor %}
                 </ul>
             </div>
+
+            <a href="{{ url_for('bolsa_terceira', download_pdf='true') }}">Download PDF</a>
             
             <table>
                 <thead>
@@ -152,7 +154,7 @@
         modalTitle.textContent = `Escolas e Prioridades de ${userName}`;
     
         // Fetch escolas for the selected user
-        fetch(`/view_escolas/${userId}/2`) // Update with your bolsa_id logic
+        fetch(`/view_escolas/${userId}/2`) 
             .then(response => response.json())
             .then(data => {
                 if (data && data.length) {
@@ -232,4 +234,5 @@
         });
     });
 </script>
+
 </html>

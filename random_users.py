@@ -26,8 +26,8 @@ def add_random_users(num_users=25):
         nome = fake.name()
         contacto = fake.phone_number()
         deficiencia = random.choice(['não', 'sim'])
-        avaliacao_curricular = random.randint(9.5, 20)
-        prova_de_conhecimentos = random.randint(9.5, 20)
+        avaliacao_curricular = random.uniform(9.5, 20)
+        prova_de_conhecimentos = random.uniform(9.5, 20)
         nota_final = round(0.3 * avaliacao_curricular + 0.7 * prova_de_conhecimentos, 2)
         estado = 'livre'
         observacoes = fake.text(max_nb_chars=200)
