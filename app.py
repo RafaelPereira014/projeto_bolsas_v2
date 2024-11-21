@@ -625,7 +625,7 @@ def bolsa_sao_miguel():
         ws.title = "Bolsa São Miguel"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -641,8 +641,8 @@ def bolsa_sao_miguel():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -707,7 +707,7 @@ def bolsa_terceira():
         ws.title = "Bolsa Terceira"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -723,8 +723,9 @@ def bolsa_terceira():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+                
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -790,7 +791,7 @@ def bolsa_santa_maria():
         ws.title = "Bolsa Santa Maria"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -806,8 +807,9 @@ def bolsa_santa_maria():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+               
                 user['prova_de_conhecimentos'],
+                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -872,7 +874,7 @@ def bolsa_faial():
         ws.title = "Bolsa Faial"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -888,8 +890,9 @@ def bolsa_faial():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+                
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -954,7 +957,7 @@ def bolsa_pico():
         ws.title = "Bolsa Pico"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -970,8 +973,9 @@ def bolsa_pico():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+                
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -1036,7 +1040,7 @@ def bolsa_sao_jorge():
         ws.title = "Bolsa São Jorge"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -1052,8 +1056,9 @@ def bolsa_sao_jorge():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+                
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -1118,7 +1123,7 @@ def bolsa_graciosa():
         ws.title = "Bolsa Graciosa"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -1134,8 +1139,9 @@ def bolsa_graciosa():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+                
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -1199,7 +1205,7 @@ def bolsa_flores():
         ws.title = "Bolsa Flores"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -1215,8 +1221,9 @@ def bolsa_flores():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+                
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
@@ -1281,7 +1288,7 @@ def bolsa_corvo():
         ws.title = "Bolsa Corvo"
 
         # Write headers
-        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
         ws.append(headers)
 
         # Write user data
@@ -1297,8 +1304,9 @@ def bolsa_corvo():
             )
             row = [
                 user['nome'],
-                user['avaliacao_curricular'],
+               
                 user['prova_de_conhecimentos'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
             ]
