@@ -147,6 +147,52 @@ def get_escolas_by_bolsa(user_id, bolsa_id):
         cursor.close()
         connection.close()
         
+def get_escolas_by_users(user_ids, bolsa_id):
+    # Create a database connection
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    try:
+        if not user_ids:
+            return []  # If the list is empty, return an empty result
+        
+        # Prepare a query string for multiple user_ids
+        placeholders = ', '.join(['%s'] * len(user_ids))  # Generate the correct number of placeholders
+        query = f"""
+        SELECT DISTINCT ue.user_id, ue.escola_id, ue.escola_priority_id, ub.contrato_id, e.nome AS escola_nome
+        FROM user_escola ue
+        JOIN Bolsa_Escola be ON ue.escola_id = be.escola_id
+        JOIN userbolsas ub ON ue.user_id = ub.user_id  -- Join with userbolsas to get contrato_id
+        JOIN Escola e ON ue.escola_id = e.id  -- Join with escola to get school name
+        WHERE ue.user_id IN ({placeholders}) AND be.bolsa_id = %s
+        """
+
+        # Execute the query with the list of user_ids and bolsa_id
+        cursor.execute(query, tuple(user_ids) + (bolsa_id,))
+
+        results = cursor.fetchall()
+
+        # Return results as a list of dictionaries
+        return [
+            {
+                "user_id": row[0],
+                "escola_id": row[1],
+                "escola_priority_id": row[2],
+                "contrato_id": row[3],
+                "escola_nome": row[4],
+            }
+            for row in results
+        ]
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return []  # Return an empty list on error
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+        
 def get_escola_names_by_bolsa(bolsa_id):
     # Create a database connection
     connection = connect_to_database()

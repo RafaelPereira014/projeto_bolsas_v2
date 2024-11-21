@@ -7,10 +7,10 @@ from flask import request, redirect, url_for, flash
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
 from flask import request, send_file
 from flask import render_template, request, send_file
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib import colors
+import csv
 import io
+from openpyxl import Workbook
+from flask import make_response
 
 import pymysql
 from werkzeug.security import generate_password_hash
@@ -604,8 +604,8 @@ def bolsa_sao_miguel():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -618,7 +618,50 @@ def bolsa_sao_miguel():
         'has_next': page < total_pages
     }
 
-    return render_template('/Bolsas/SaoMiguel.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa São Miguel"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_saomiguel.xlsx'
+        )
+
+    return render_template('/Bolsas/SaoMiguel.html', user_info=paginated_user_info, pagination=pagination, uploaded_documents=uploaded_documents)
 
 @app.route('/Bolsas/Terceira', methods=['GET', 'POST'])
 def bolsa_terceira():
@@ -643,8 +686,8 @@ def bolsa_terceira():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -657,64 +700,48 @@ def bolsa_terceira():
         'has_next': page < total_pages
     }
 
-    # Generate PDF when requested
-    if request.args.get('download_pdf') == 'true':
-        # Create a PDF using ReportLab
-        pdf_io = io.BytesIO()
-        c = canvas.Canvas(pdf_io, pagesize=letter)
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Terceira"
 
-        # Set up font and other settings
-        c.setFont("Helvetica", 10)
-        width, height = letter
-
-        # Start writing content on the PDF
-        y_position = height - 40  # Start from the top of the page
-
-        # Add Title
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(30, y_position, "Bolsas - Terceira ")
-        y_position -= 20
-
-        # Table Headers
+        # Write headers
         headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
-        col_widths = [150, 120, 120, 80, 180]
-        
-        # Draw table headers
-        for i, header in enumerate(headers):
-            c.setFont("Helvetica-Bold", 10)
-            c.setFillColor(colors.black)
-            c.drawString(30 + sum(col_widths[:i]), y_position, header)
-        
-        # Draw a line under the headers
-        y_position -= 10
-        c.line(30, y_position, width - 30, y_position)
-        y_position -= 10
+        ws.append(headers)
 
-        # Add user info rows
-        for user in paginated_user_info:
-            row_data = [
-                user['nome'], 
-                str(user['avaliacao_curricular']), 
-                str(user['prova_de_conhecimentos']), 
-                str(user['nota_final']),
-                ", ".join([escola['nome'] for escola in escolas_bolsa if escola['user_id'] == user['id']])
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
             ]
+            ws.append(row)
 
-            for i, data in enumerate(row_data):
-                c.setFont("Helvetica", 10)
-                c.drawString(30 + sum(col_widths[:i]), y_position, data)
-            
-            y_position -= 15
-            if y_position < 40:  # If we reach near the bottom, create a new page
-                c.showPage()
-                y_position = height - 40
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
 
-        # Save the PDF
-        c.save()
-
-        # Send the PDF as a response
-        pdf_io.seek(0)
-        return send_file(pdf_io, mimetype='application/pdf', as_attachment=True, download_name='bolsa_terceira.pdf')
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_terceira.xlsx'
+        )
 
     return render_template('/Bolsas/Terceira.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
@@ -742,8 +769,8 @@ def bolsa_santa_maria():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -755,6 +782,49 @@ def bolsa_santa_maria():
         'has_prev': page > 1,
         'has_next': page < total_pages
     }
+
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Santa Maria"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_santamaria.xlsx'
+        )
 
     return render_template('/Bolsas/SantaMaria.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
@@ -781,8 +851,8 @@ def bolsa_faial():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -794,6 +864,49 @@ def bolsa_faial():
         'has_prev': page > 1,
         'has_next': page < total_pages
     }
+
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Faial"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_faial.xlsx'
+        )
 
     return render_template('/Bolsas/Faial.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
@@ -820,8 +933,8 @@ def bolsa_pico():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -833,6 +946,49 @@ def bolsa_pico():
         'has_prev': page > 1,
         'has_next': page < total_pages
     }
+
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Pico"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_pico.xlsx'
+        )
 
     return render_template('/Bolsas/Pico.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
@@ -859,8 +1015,8 @@ def bolsa_sao_jorge():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -872,6 +1028,49 @@ def bolsa_sao_jorge():
         'has_prev': page > 1,
         'has_next': page < total_pages
     }
+
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa São Jorge"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_sjorge.xlsx'
+        )
 
     return render_template('/Bolsas/SaoJorge.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
@@ -898,8 +1097,8 @@ def bolsa_graciosa():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -912,6 +1111,48 @@ def bolsa_graciosa():
         'has_next': page < total_pages
     }
 
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Graciosa"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_graciosa.xlsx'
+        )
     return render_template('/Bolsas/Graciosa.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
 @app.route('/Bolsas/Flores')
@@ -937,8 +1178,8 @@ def bolsa_flores():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -950,6 +1191,49 @@ def bolsa_flores():
         'has_prev': page > 1,
         'has_next': page < total_pages
     }
+
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Flores"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_flores.xlsx'
+        )
 
     return render_template('/Bolsas/Flores.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
@@ -976,8 +1260,8 @@ def bolsa_corvo():
     paginated_user_info = user_info_sorted[start:end]
 
     # Fetch escolas for the current page of users
-    user_ids_paginated = [user['id'] for user in paginated_user_info]
-    escolas_bolsa = get_escolas_by_bolsa(user_ids_paginated, bolsa_id)
+    user_ids_paginated = [user['id'] for user in user_info]
+    escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -989,6 +1273,49 @@ def bolsa_corvo():
         'has_prev': page > 1,
         'has_next': page < total_pages
     }
+
+    if request.args.get('download_xlsx') == 'true':
+        # Generate XLSX file
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Bolsa Corvo"
+
+        # Write headers
+        headers = ["Nome", "Avaliação Curricular", "Prova de Conhecimentos", "Nota Final", "Escolas e Prioridades"]
+        ws.append(headers)
+
+        # Write user data
+        for user in user_info:
+            escolas_text = ", ".join(
+                [
+                    f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
+                    for escola in sorted(
+                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
+                        key=lambda x: x['escola_priority_id']
+                    )
+                ]
+            )
+            row = [
+                user['nome'],
+                user['avaliacao_curricular'],
+                user['prova_de_conhecimentos'],
+                user['nota_final'],
+                escolas_text,
+            ]
+            ws.append(row)
+
+        # Save the workbook to a BytesIO stream
+        xlsx_io = io.BytesIO()
+        wb.save(xlsx_io)
+        xlsx_io.seek(0)
+
+        # Send XLSX as a response
+        return send_file(
+            xlsx_io,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='bolsa_corvo.xlsx'
+        )
 
     return render_template('/Bolsas/Corvo.html', user_info=paginated_user_info, escolas_bolsa=escolas_bolsa, pagination=pagination, uploaded_documents=uploaded_documents)
 
