@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/consulta.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="{{ url_for('static', filename='images/GBI.png') }}" type="image/png"> <!-- Favicon -->
 
@@ -113,7 +114,9 @@
                     </tr>
                     <tr>
                         <th>Escolas e prioridades:</th>
-                        <td>{{ user_info.local_prova }}</td>
+                        <td>
+                            <button onclick="showEscolasPopup({{ user_info.id }}, '{{ user_info.nome }}')">Ver Escolas</button>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -195,10 +198,57 @@
         
     </div>
 </body>
+<!-- Popup Modal -->
+<div id="escolasModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Escolas e Prioridades</h2>
+        <div id="escolasList"></div>
+    </div>
+</div>
 <script>
     document.querySelector('.toggle-button').addEventListener('click', function() {
         const bolsasMenu = document.querySelector('.bolsas-menu');
         bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
     });
+</script>
+
+<script>
+    function showEscolasPopup(userId, userName) {
+        const escolasList = document.getElementById('escolasList');
+        const modalTitle = document.getElementById('modalTitle');
+        escolasList.innerHTML = ""; // Clear previous content
+    
+        // Set the user's name in the modal title
+        modalTitle.textContent = `Escolas e Prioridades de ${userName}`;
+    
+        fetch(`/view_escolas/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.length) {
+                    data.forEach(escola => {
+                        const escolaInfo = document.createElement('div');
+                        escolaInfo.textContent = `${escola.escola_nome}, Prioridade: ${escola.escola_priority_id}`;
+                        escolasList.appendChild(escolaInfo);
+                    });
+                } else {
+                    escolasList.textContent = "Nenhuma escola encontrada.";
+                }
+                document.getElementById('escolasModal').style.display = "block"; // Show modal
+            })
+            .catch(error => {
+                console.error("Error fetching escolas:", error);
+                escolasList.textContent = "Erro ao carregar escolas. Tente novamente.";
+            });
+    }
+    
+    function closeModal() {
+        document.getElementById('escolasModal').style.display = "none"; // Hide modal
+    }
 </script>
 </html>

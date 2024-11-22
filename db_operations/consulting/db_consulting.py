@@ -193,6 +193,36 @@ def get_escolas_by_users(user_ids, bolsa_id):
         cursor.close()
         connection.close()
         
+def get_escolas_user(user_id):
+    # Create a database connection
+    connection = connect_to_database()
+    cursor = connection.cursor()
+
+    try:
+        # Prepare a query string for a single user_id
+        query = """
+        SELECT DISTINCT ue.user_id, ue.escola_id, ue.escola_priority_id, e.nome AS escola_nome
+        FROM user_escola ue
+        JOIN Escola e ON ue.escola_id = e.id  
+        WHERE ue.user_id = %s
+        ORDER BY ue.escola_priority_id
+        """
+
+        cursor.execute(query, (user_id))  # Pass user_id and bolsa_id as parameters
+        results = cursor.fetchall()
+
+        # Return results as a list of dictionaries
+        return [{"user_id": row[0], "escola_id": row[1], "escola_priority_id": row[2], "escola_nome": row[3] } for row in results]
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return []  # Return an empty list on error
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+
 def get_escola_names_by_bolsa(bolsa_id):
     # Create a database connection
     connection = connect_to_database()

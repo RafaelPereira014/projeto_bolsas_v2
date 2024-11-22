@@ -167,7 +167,7 @@ def minhaconta():
 
 @app.route('/user_profile/<int:user_id>', methods=['GET', 'POST'])
 def user_profile(user_id):
-    user_info = user_infos(user_id)  # Now retrieves information for all users
+    user_info = user_infos(user_id)  
     colocados= get_colocados_by_user_id(user_id)
     
     
@@ -541,6 +541,11 @@ def fetch_escolas(user_id, bolsa_id):
     # print("User ID:", user_id)
     escolas = get_escolas_by_bolsa(user_id, bolsa_id)
     # print("Fetched escolas:", escolas)  # This should show the fetched results
+    return jsonify(escolas)  # Return JSON response
+
+@app.route('/view_escolas/<int:user_id>')
+def fetch_escolas_user(user_id):
+    escolas = get_escolas_user(user_id)
     return jsonify(escolas)  # Return JSON response
 
 @app.route('/get_escolas/<int:bolsa_id>', methods=['GET'])
