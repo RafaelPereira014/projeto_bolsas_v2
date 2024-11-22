@@ -159,12 +159,21 @@ def get_escolas_by_users(user_ids, bolsa_id):
         # Prepare a query string for multiple user_ids
         placeholders = ', '.join(['%s'] * len(user_ids))  # Generate the correct number of placeholders
         query = f"""
-        SELECT DISTINCT ue.user_id, ue.escola_id, ue.escola_priority_id, ub.contrato_id, e.nome AS escola_nome
-        FROM user_escola ue
-        JOIN Bolsa_Escola be ON ue.escola_id = be.escola_id
-        JOIN userbolsas ub ON ue.user_id = ub.user_id  -- Join with userbolsas to get contrato_id
-        JOIN Escola e ON ue.escola_id = e.id  -- Join with escola to get school name
-        WHERE ue.user_id IN ({placeholders}) AND be.bolsa_id = %s
+        SELECT DISTINCT ue.user_id, 
+                ue.escola_id, 
+                ue.escola_priority_id, 
+                ub.contrato_id, 
+                e.nome AS escola_nome
+                FROM user_escola ue
+                JOIN Bolsa_Escola be 
+                    ON ue.escola_id = be.escola_id
+                JOIN userbolsas ub 
+                    ON ue.user_id = ub.user_id  -- Join with userbolsas to get contrato_id
+                    AND ub.bolsa_id = be.bolsa_id  -- Ensure contrato_id corresponds to the correct bolsa_id
+                JOIN Escola e 
+                    ON ue.escola_id = e.id  -- Join with Escola to get the school name
+                WHERE ue.user_id IN ({placeholders}) 
+                AND be.bolsa_id = %s
         """
 
         # Execute the query with the list of user_ids and bolsa_id

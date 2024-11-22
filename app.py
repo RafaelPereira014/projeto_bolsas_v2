@@ -624,26 +624,41 @@ def bolsa_sao_miguel():
         ws.title = "Bolsa São Miguel"
 
         # Write headers
-        headers = ["Nome",  "Prova de Conhecimentos","Avaliação Curricular", "Nota Final", "Escolas e Prioridades"]
+        headers = ["Nome", "Prova de Conhecimentos", "Avaliação Curricular", "Nota Final", "Escolas e Prioridades", "Contrato ID"]
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -710,23 +725,38 @@ def bolsa_terceira():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        # Write user data
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-                
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -794,23 +824,37 @@ def bolsa_santa_maria():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-               
                 user['prova_de_conhecimentos'],
-                 user['avaliacao_curricular'],
+                user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -877,23 +921,37 @@ def bolsa_faial():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-                
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -960,23 +1018,37 @@ def bolsa_pico():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-                
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -1043,23 +1115,37 @@ def bolsa_sao_jorge():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-                
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -1126,23 +1212,37 @@ def bolsa_graciosa():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-                
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -1208,23 +1308,37 @@ def bolsa_flores():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-                
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
@@ -1291,23 +1405,37 @@ def bolsa_corvo():
         ws.append(headers)
 
         # Write user data
-        for user in user_info:
+        for user in user_info_sorted:
+        # Fetch escolas and contrato_id for the current user
+            user_escolas = [
+                escola for escola in escolas_bolsa if escola['user_id'] == user['id']
+            ]
+            
+            # Generate a text summary of the schools
             escolas_text = ", ".join(
                 [
                     f"{escola['escola_nome']} (Prioridade:{escola['escola_priority_id']})"
-                    for escola in sorted(
-                        [escola for escola in escolas_bolsa if escola['user_id'] == user['id']],
-                        key=lambda x: x['escola_priority_id']
-                    )
+                    for escola in sorted(user_escolas, key=lambda x: x['escola_priority_id'])
                 ]
             )
+            
+            # Get unique contrato_ids for the user
+            contrato_ids = ", ".join(
+                str(contrato_id) for contrato_id in set(
+                    escola['contrato_id'] for escola in user_escolas if escola['contrato_id'] is not None
+                )
+            )
+            # Debugging: Print contrato_ids to ensure correctness
+            #print(f"Contrato IDs for user {user['id']}: {contrato_ids}")
+
+            # Append user data to the row
             row = [
                 user['nome'],
-               
                 user['prova_de_conhecimentos'],
                 user['avaliacao_curricular'],
                 user['nota_final'],
                 escolas_text,
+                contrato_ids,  # Add contrato_id to the row
             ]
             ws.append(row)
 
