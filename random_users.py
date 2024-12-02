@@ -25,7 +25,7 @@ def add_random_users(num_users=25):
     for _ in range(num_users):
         nome = fake.name()
         contacto = fake.phone_number()
-        deficiencia = random.choice(['não', 'sim'])
+        deficiencia = random.choice(['não'])
         avaliacao_curricular = random.uniform(9.5, 20)
         prova_de_conhecimentos = random.uniform(9.5, 20)
         nota_final = round(0.3 * avaliacao_curricular + 0.7 * prova_de_conhecimentos, 2)
