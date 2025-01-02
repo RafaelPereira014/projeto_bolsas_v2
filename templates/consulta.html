@@ -152,7 +152,7 @@
                 <tbody id="table-body">
                     {% if scores %}
                         {% for score in scores %}
-                        <tr data-estado="{{ score.estado }} " >
+                        <tr data-estado="{{ score.estado }}">
                             <td>{{ loop.index + (current_page - 1) * per_page }}</td>
                             <td><a href="{{ url_for('user_profile', user_id=score.id) }}">{{ score.nome }}</a></td>
                             <td>{{ score.nota_final }}</td>
@@ -227,8 +227,10 @@
     // Filter table based on estado using filter buttons
     const filterButtons = document.querySelectorAll('.filter-button');
     filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const selectedEstado = this.getAttribute('data-estado');
+        button.addEventListener('click', function () {
+            const selectedEstado = this.getAttribute('data-estado').trim().toLowerCase();
+            console.log("Selected Estado:", selectedEstado); // Debugging
+
             const rows = document.querySelectorAll('#table-body tr');
 
             // Remove active class from all buttons and add to the clicked button
@@ -236,19 +238,26 @@
             this.classList.add('active');
 
             rows.forEach(row => {
-                const estado = row.getAttribute('data-estado');
-                // Show row if it matches the selected estado or if "Todos" is selected
+                const estado = row.getAttribute('data-estado').trim().toLowerCase();
+                console.log("Row Estado:", estado); // Debugging
+
+                // Show row if it matches the selected estado or if "all" is selected
                 if (selectedEstado === 'all' || estado === selectedEstado) {
-                    row.style.display = '';
+                    row.style.display = ''; // Show row
                 } else {
-                    row.style.display = 'none';
+                    row.style.display = 'none'; // Hide row
                 }
+
+                // Add a specific class for rows with "negado" estado
                 if (estado === 'negado') {
                     row.classList.add('negado-row');
+                } else {
+                    row.classList.remove('negado-row');
                 }
             });
         });
     });
+
     
 </script>
     
