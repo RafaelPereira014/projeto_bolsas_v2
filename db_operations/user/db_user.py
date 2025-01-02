@@ -153,3 +153,18 @@ def count_users_by_bolsa(bolsa_id):
     connection.close()
 
     return total
+
+def update_additional_info(user_id, additional_info):
+    
+    connection = connect_to_database()
+    cursor = connection.cursor()
+    
+    query = """
+        UPDATE users
+        SET observacoes = %s
+        WHERE id = %s
+    """
+    cursor.execute(query, (additional_info, user_id))
+    connection.commit()
+    cursor.close()
+    connection.close()

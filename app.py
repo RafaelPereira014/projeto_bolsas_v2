@@ -168,10 +168,17 @@ def minhaconta():
 @app.route('/user_profile/<int:user_id>', methods=['GET', 'POST'])
 def user_profile(user_id):
     user_info = user_infos(user_id)  
-    colocados= get_colocados_by_user_id(user_id)
-    
-    
-    return render_template('user_profile.html', user_info=user_info,colocados=colocados)
+    colocados = get_colocados_by_user_id(user_id)
+
+    if request.method == 'POST':
+        additional_info = request.form.get('additional-info')
+        
+        if additional_info is not None:
+            update_additional_info(user_id, additional_info)
+            flash('Informações adicionais atualizadas com sucesso!', 'success')
+            return redirect(url_for('user_profile', user_id=user_id))
+
+    return render_template('user_profile.html', user_info=user_info, colocados=colocados)
 
 
 
@@ -343,12 +350,18 @@ def limpar_estados():
     connection = create_connection()
     try:
         with connection.cursor() as cursor:
-            # Update all rows to set estado to 'livre'
+            # Update all rows in Users to set estado to 'livre'
             update_query = "UPDATE Users SET estado = 'livre'"
             cursor.execute(update_query)
+            
+            # Delete all rows from colocados
+            delete_query = "DELETE FROM colocados"
+            cursor.execute(delete_query)
+            
+            # Commit the changes
             connection.commit()
     except Exception as e:
-        print(f"Error updating estados: {e}")
+        print(f"Error updating estados or deleting colocados: {e}")
     finally:
         connection.close()
     

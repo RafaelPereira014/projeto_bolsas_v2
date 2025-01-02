@@ -188,12 +188,13 @@
                 </table>
             </div>
 
-            <div class="additional-info">
-                <h3>Informações Adicionais</h3>
-                <table>
-                    
-                </table>
-            </div>
+            <form method="POST" action="{{ url_for('user_profile', user_id=user_info['id']) }}">
+                <div class="additional-info">
+                    <h3>Informações Adicionais</h3>
+                    <textarea id="additional-info" name="additional-info" rows="5" cols="50">{{ user_info.observacoes }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Atualizar Informações</button>
+            </form>
         </div>
         
     </div>

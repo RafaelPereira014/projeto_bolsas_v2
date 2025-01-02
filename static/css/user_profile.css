@@ -86,3 +86,24 @@ a:hover {
         border-bottom: 2px solid #dfe6e9;
     }
 }
+
+
+
+textarea {
+    width: 100%; /* Full width */
+    padding: 10px;
+    border: 1px solid #ced4da; /* Light gray border */
+    border-radius: 5px;
+    font-size: 14px;
+    color: #495057; /* Dark gray text */
+    background-color: #ffffff; /* White background */
+    resize: vertical; /* Allow vertical resizing only */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease-in-out;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #007bff; /* Bright blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
