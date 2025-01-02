@@ -79,7 +79,7 @@
                         <th>Avaliação Curricular</th>
 
                         <th>Classificação final</th>
-                        <th>Bolsa de Ilha Terceira</th>
+                        <th>Bolsa de Ilha Santa Maria</th>
                         <th>CTFP</th>
                         <th>Estado</th> <!-- Added Status column -->
                     </tr>
@@ -96,7 +96,7 @@
                         <td>
                             <button onclick="showEscolasPopup({{ user.id }}, '{{ user.nome }}')">Ver Escolas</button>
                         </td>
-                        <td>{{user.contrato_id}}</td>
+                        <td>{{user.tipo_contrato}}</td>
                         <td>
                             <!-- Dropdown for status change -->
                             <select onchange="updateStatus({{ user.id }}, this.value)">

@@ -12,23 +12,32 @@ def get_user_info(user_ids):
     try:
         placeholders = ', '.join(['%s'] * len(user_ids))
         query = f"""
-        SELECT DISTINCT u.id AS candidato_id, u.nome, u.avaliacao_curricular, u.prova_de_conhecimentos, u.nota_final, ub.contrato_id, u.estado
+        SELECT DISTINCT 
+            u.id AS candidato_id, 
+            u.nome, 
+            u.avaliacao_curricular, 
+            u.prova_de_conhecimentos, 
+            u.nota_final, 
+            c.tipo AS tipo_contrato, 
+            u.estado
         FROM Users u
         JOIN userbolsas ub ON u.id = ub.user_id
-        WHERE u.id IN ({placeholders}) ORDER BY u.nota_final DESC
+        LEFT JOIN contrato c ON ub.contrato_id = c.id
+        WHERE u.id IN ({placeholders}) 
+        ORDER BY u.nota_final DESC
         """
         cursor.execute(query, user_ids)
         results = cursor.fetchall()
 
-        # Return results as a list of dictionaries, including contrato_id
+        # Return results as a list of dictionaries, including tipo_contrato
         return [{
             "id": row[0], 
             "nome": row[1], 
             "avaliacao_curricular": row[2], 
             "prova_de_conhecimentos": row[3], 
             "nota_final": row[4],
-            "contrato_id": row[5],
-            "estado": row[6]# Include contrato_id here
+            "tipo_contrato": row[5],  # Include tipo_contrato
+            "estado": row[6]
         } for row in results]
 
     except Exception as e:
