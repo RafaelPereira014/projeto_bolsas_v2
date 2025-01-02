@@ -12,7 +12,7 @@ def get_schools_for_bolsa(bolsa_id):
     """Fetch schools linked to a specific bolsa."""
     connection = create_connection()
     cursor = connection.cursor()
-    cursor.execute("SELECT escola_id FROM bolsa_escola WHERE bolsa_id = %s", (bolsa_id,))
+    cursor.execute("SELECT escola_id FROM Bolsa_Escola WHERE bolsa_id = %s", (bolsa_id,))
     schools = [row[0] for row in cursor.fetchall()]
     cursor.close()
     connection.close()
