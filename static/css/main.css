@@ -1,62 +1,71 @@
-/* Overview styles */
+/* Overview Section Styles */
 .overview {
-    background-color: #f0f4ff; /* Soft light blue background for overview section */
-    border-radius: 8px;
+    background-color: #e8f0fe; /* Softer light blue background for a calming effect */
+    border-radius: 10px; /* Rounded corners */
     padding: 20px;
     margin: 20px 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 .overview h3 {
-    color: #007bff; /* Bright blue header color */
-    margin-bottom: 10px;
+    color: #0056b3; /* Slightly darker blue for better contrast */
+    margin-bottom: 12px;
+    font-size: 1.5rem;
 }
 
 .overview ul {
-    list-style-type: none;
-    padding: 0;
+    list-style: none;
+    padding-left: 0;
 }
 
 .overview ul li {
-    margin: 5px 0;
-    font-size: 1.1rem;
-    color: #495057; /* Dark gray text for better readability */
+    margin: 8px 0;
+    font-size: 1.2rem;
+    color: #37474f; /* Darker gray for better readability */
 }
 
-/* Table styles */
+/* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 1rem; /* Standard text size for tables */
 }
 
 th, td {
-    padding: 15px;
+    padding: 14px 16px; /* Balanced padding for better spacing */
     text-align: left;
-    background-color: #ffffff; /* White background for table rows */
+    background-color: #ffffff; /* White background for cells */
+    border-bottom: 1px solid #dee2e6; /* Light gray border between rows */
 }
 
 th {
-    background-color: #007bff; /* Bright blue header */
-    color: white;
+    background-color: #0056b3; /* Consistent blue for table headers */
+    color: #ffffff;
+    font-weight: bold;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #f8f9fa; /* Very light gray for even rows */
+    background-color: #f1f4f9; /* Subtle light gray for even rows */
 }
 
 tbody tr:hover {
-    background-color: #cfe9ff; /* Light blue on hover */
+    background-color: #e3f2fd; /* Light blue for hover effect */
+    cursor: pointer; /* Pointer cursor to indicate interactivity */
 }
 
-/* Additional styling for headers in the content area */
+/* Content Area Header Styles */
 .content h2 {
-    margin-top: 20px;
-    color: #343a40; /* Dark gray for headers */
+    margin-top: 24px;
+    color: #212529; /* Slightly darker gray for headers */
+    font-size: 2rem;
+    border-bottom: 2px solid #e9ecef; /* Light border for section separation */
+    padding-bottom: 8px;
 }
 
 .content p {
-    font-size: 1.1rem;
-    line-height: 1.5;
-    color: #495057; /* Dark gray for text */
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: #495057; /* Consistent dark gray for text */
+    margin: 12px 0;
 }

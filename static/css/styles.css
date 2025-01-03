@@ -3,8 +3,8 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #e8f0fe; /* Soft light blue background */
-    color: #343a40; /* Dark gray text */
+    background-color: #f0f4ff; /* Softer light blue */
+    color: #343a40; /* Neutral dark gray for text */
 }
 
 /* Layout Container */
@@ -16,11 +16,11 @@ body {
 
 /* Header */
 header {
-    background-color: #007bff; /* Bright blue for header */
+    background-color: #0056b3; /* Slightly darker blue for the header */
     color: #fff;
     padding: 15px 20px;
     text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Softer shadow */
     position: fixed;
     width: 100%;
     top: 0;
@@ -29,31 +29,31 @@ header {
 
 header h1 {
     margin: 0;
-    font-size: 1.75rem;
-    letter-spacing: 1px;
-    font-weight: 500;
+    font-size: 1.8rem;
+    letter-spacing: 0.5px;
+    font-weight: 600; /* Slightly bolder for prominence */
 }
 
 /* Sidebar */
 .sidebar {
-    width: 220px;
-    background-color: #343a40; /* Dark gray for sidebar */
+    width: 240px;
+    background-color: #2c3e50; /* Darker gray-blue for sidebar */
     padding: 20px;
     position: fixed;
     height: 100%;
     top: 60px;
     left: 0;
     overflow-y: auto;
-    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15); /* More subtle shadow */
     z-index: 200;
 }
 
 .sidebar h2 {
     color: #ffffff;
-    font-size: 1.6rem; /* Slightly larger */
+    font-size: 1.5rem;
     margin-bottom: 20px;
     text-align: center;
-    font-weight: 600; /* Bolder header */
+    font-weight: 700; /* Bolder header */
 }
 
 .sidebar ul {
@@ -67,57 +67,55 @@ header h1 {
 }
 
 .sidebar ul li a {
-    display: flex;
-    align-items: center;
+    display: block;
     text-decoration: none;
     color: #ffffff;
     font-weight: 500;
     font-size: 1.1rem;
-    padding: 12px 18px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 6px;
     transition: all 0.3s ease;
-    position: relative; /* For pseudo-element */
 }
 
 .sidebar ul li a:hover {
-    color: #f8f9fa; /* Light gray hover */
-    background-color: #0056b3; /* Darker blue hover */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
+    background-color: #007bff; /* Bright blue for hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar ul li a.active {
-    background-color: #007bff;
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2); /* Active shadow */
+    background-color: #0056b3; /* Darker blue for active state */
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3); /* Highlighted shadow */
 }
 
-/* Sidebar for smaller screens */
+/* Sidebar Responsive Adjustments */
 @media (max-width: 768px) {
     .sidebar {
         width: 200px;
     }
 
     .sidebar ul li a {
-        padding: 10px 15px;
+        padding: 10px 14px;
     }
 }
+
 /* Content */
 .content {
-    margin-left: 260px; /* Adjust to sidebar width */
-    padding: 100px 40px 40px ;
+    margin-left: 260px; /* Matches sidebar width */
+    padding: 100px 30px 30px;
     flex: 1;
-    background-color: #ffffff; /* White content area */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
-    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
 }
 
 .content h2 {
-    font-size: 1.8rem;
-    color: #343a40; /* Dark text for headers */
+    font-size: 2rem;
+    color: #0056b3; /* Consistent blue for section headers */
     margin-bottom: 20px;
-    border-bottom: 2px solid #007bff; /* Bright blue underline */
-    padding-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 8px;
 }
 
 /* Table */
@@ -125,46 +123,43 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    table-layout: fixed;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-    padding: 15px;
+    padding: 14px 16px;
     text-align: left;
-    background-color: #fafafa;
+    background-color: #f9f9f9; /* Slightly off-white background */
     word-wrap: break-word;
 }
 
 th {
-    background-color: #007bff; /* Bright blue for header */
-    color: #fff;
+    background-color: #007bff;
+    color: #ffffff;
     font-weight: bold;
+    font-size: 1rem;
 }
 
 td {
     color: #343a40;
-    border-bottom: 1px solid #eaeaea;
+    border-bottom: 1px solid #e0e0e0; /* Light gray border */
 }
 
 tr:hover td {
-    background-color: #e3f2fd; /* Light blue hover effect */
-    transition: background-color 0.3s ease;
+    background-color: #e3f2fd; /* Light blue for hover effect */
+    transition: background-color 0.3s ease-in-out;
 }
-
-
-
 
 /* Bolsas Menu */
 .bolsas-menu {
     display: none;
-    padding-left: 0;
+    padding: 0;
 }
 
 .bolsas-menu li {
-    margin: 10px 0;
+    margin: 8px 0;
 }
 
 .toggle-button {
@@ -173,8 +168,8 @@ tr:hover td {
     color: #ffffff;
     font-size: 1.1rem;
     cursor: pointer;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 10px 14px;
+    border-radius: 6px;
     text-align: left;
     width: 100%;
 }
@@ -182,5 +177,5 @@ tr:hover td {
 .toggle-button:hover {
     background-color: #0056b3;
     color: white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
-
