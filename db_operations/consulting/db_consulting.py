@@ -13,7 +13,7 @@ def execute_query(query, params):
         cursor.execute(query, params)
         results = cursor.fetchall()  # Fetch all results
         return results
-    except mysql.connector.Error as err:
+    except pymysql.connector.Error as err:
         print(f"Error: {err}")
     finally:
         cursor.close()  # Close the cursor to avoid the "Unread result found" error
@@ -25,7 +25,7 @@ def execute_update(query, params):
     try:
         cursor.execute(query, params)
         connection.commit()  # Commit changes for update/insert queries
-    except mysql.connector.Error as err:
+    except pymysql.connector.Error as err:
         print(f"Error: {err}")
         connection.rollback()  # Rollback in case of an error
     finally:
@@ -38,7 +38,7 @@ def execute_insert(query, params):
     try:
         cursor.execute(query, params)
         connection.commit()  # Commit changes for update/insert queries
-    except mysql.connector.Error as err:
+    except pymysql.connector.Error as err:
         print(f"Error: {err}")
         connection.rollback()
     finally:
