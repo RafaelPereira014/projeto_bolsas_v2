@@ -166,7 +166,7 @@ def update_additional_info(user_id, additional_info):
     cursor = connection.cursor()
     
     query = """
-        UPDATE users
+        UPDATE Users
         SET observacoes = %s
         WHERE id = %s
     """
