@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='images/GBI.png') }}" type="image/png"> <!-- Favicon -->
-
+    <link rel="icon" href="{{ url_for('static', filename='images/GBI.png') }}" type="image/png"> 
     <title>Página Principal</title>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Plataforma de Gestão das Bolsas de Ilha - <span>Procedimento concursal centralizado SER</span></h1>
-            
         </header>
 
         <div class="sidebar">
@@ -27,13 +26,6 @@
             <ul class="bolsas-menu" style="display:none;">
                 <li><a href="/Bolsas/SaoMiguel">Bolsa de Ilha São Miguel</a></li>
                 <li><a href="/Bolsas/Terceira">Bolsa de Ilha Terceira</a></li>
-                <li><a href="/Bolsas/SantaMaria">Bolsa de Ilha Santa Maria</a></li>
-                <li><a href="/Bolsas/Faial">Bolsa de Ilha Faial</a></li>
-                <li><a href="/Bolsas/Pico">Bolsa de Ilha Pico</a></li>
-                <li><a href="/Bolsas/SaoJorge">Bolsa de Ilha São Jorge</a></li>
-                <li><a href="/Bolsas/Graciosa">Bolsa de Ilha Graciosa</a></li>
-                <li><a href="/Bolsas/Flores">Bolsa de Ilha Flores</a></li>
-                <li><a href="/Bolsas/Corvo">Bolsa de Ilha Corvo</a></li>
             </ul>
             <ul>
                 <li><a href="/minhaconta">Minha conta</a></li>
@@ -44,18 +36,39 @@
         </div>
 
         <div class="content">
-            <h2>Bem-vindo à Página Principal</h2>
-
-            <div class="overview">
-                <h3>Estatísticas</h3>
-                <ul>
-                    <li>Número de candidatos: <strong>{{ no_users }}</strong></li>
-                    <li>Número de bolsas: <strong>{{ no_bolsas }}</strong></li>
-                    <li>Número de escolas: <strong>{{ no_escolas }}</strong></li>
-                    <li>Colocados: <strong>{{ no_colocados }}</strong></li>
-                </ul>
+            <!-- Row of icons -->
+            <div class="icon-row">
+                <div class="icon-card">
+                    <i class="bi bi-briefcase-fill"></i>
+                    <h3>50 Vagas Disponíveis</h3>
+                </div>
+                <div class="icon-card">
+                    <i class="bi bi-person-fill"></i>
+                    <h3>200 Candidatos</h3>
+                </div>
+                <div class="icon-card">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <h3>150 Colocados</h3>
+                </div>
             </div>
 
+            <!-- Statistics Section -->
+            <div class="statistics-row">
+                <div class="stat-card">
+                    <h3>Vagas por Ilha</h3>
+                    <canvas id="vagasChart"></canvas>
+                </div>
+                <div class="stat-card">
+                    <h3>Candidatos por Escola</h3>
+                    <canvas id="candidatosChart"></canvas>
+                </div>
+                <div class="stat-card">
+                    <h3>Percentagem de Colocados</h3>
+                    <canvas id="colocadosChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Updates Table -->
             <h3>Atividades Recentes</h3>
             <table>
                 <thead>
@@ -66,19 +79,105 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Add recent activity data here -->
-                    
+                    <tr>
+                        <td>Adicionou 10 novas vagas</td>
+                        <td>2025-01-01</td>
+                        <td>Ana Silva</td>
+                    </tr>
+                    <tr>
+                        <td>Atualizou a lista de candidatos</td>
+                        <td>2025-01-01</td>
+                        <td>João Pereira</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-
-        
     </div>
 
     <script>
-        document.querySelector('.toggle-button').addEventListener('click', function() {
-            const bolsasMenu = document.querySelector('.bolsas-menu');
-            bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
+        // Vagas por Ilha Chart
+        const vagasCtx = document.getElementById('vagasChart').getContext('2d');
+        new Chart(vagasCtx, {
+            type: 'bar',
+            data: {
+                labels: ['São Miguel', 'Terceira', 'Santa Maria', 'Faial', 'Pico'],
+                datasets: [{
+                    label: 'Vagas',
+                    data: [30, 20, 10, 15, 25],
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Candidatos por Escola Chart
+        const candidatosCtx = document.getElementById('candidatosChart').getContext('2d');
+        new Chart(candidatosCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Escola A', 'Escola B', 'Escola C', 'Escola D'],
+                datasets: [{
+                    label: 'Candidatos',
+                    data: [50, 40, 60, 30],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' }
+                }
+            }
+        });
+
+        // Percentagem de Colocados Chart
+        const colocadosCtx = document.getElementById('colocadosChart').getContext('2d');
+        new Chart(colocadosCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Colocados', 'Não Colocados'],
+                datasets: [{
+                    label: 'Colocados',
+                    data: [150, 50],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.5)', // Green
+                        'rgba(220, 53, 69, 0.5)'  // Red
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(220, 53, 69, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
         });
     </script>
 </body>
