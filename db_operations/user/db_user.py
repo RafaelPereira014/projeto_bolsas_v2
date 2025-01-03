@@ -108,45 +108,40 @@ def get_colocados_by_user_id(user_id):
     connection = connect_to_database()  # Ensure this function is defined elsewhere
     cursor = connection.cursor()
 
-    try:
-        query = """
-        SELECT 
-            c.id, 
-            c.user_id, 
-            b.nome AS bolsa_nome, 
-            c.escola_nome, 
-            co.tipo AS tipo_contrato, 
-            c.escola_priority_id, 
-            c.placement_date
-        FROM colocados AS c
-        LEFT JOIN bolsa AS b ON c.bolsa_id = b.id
-        LEFT JOIN contrato AS co ON c.contrato_id = co.id
-        WHERE c.user_id = %s
-        """
-        cursor.execute(query, (user_id,))
-        results = cursor.fetchall()
+    query = """
+    SELECT 
+        c.id, 
+        c.user_id, 
+        b.nome AS bolsa_nome, 
+        c.escola_nome, 
+        co.tipo AS tipo_contrato, 
+        c.escola_priority_id, 
+        c.placement_date
+    FROM colocados AS c
+    LEFT JOIN bolsa AS b ON c.bolsa_id = b.id
+    LEFT JOIN contrato AS co ON c.contrato_id = co.id
+    WHERE c.user_id = %s
+    """
+    cursor.execute(query, (user_id,))
+    results = cursor.fetchall()
 
-        colocados_list = []
-        for row in results:
-            colocados_list.append({
-                "id": row[0],
-                "user_id": row[1],
-                "bolsa_nome": row[2],
-                "escola_nome": row[3],
-                "tipo_contrato": row[4],
-                "escola_priority_id": row[5],
-                "placement_date": row[6],
-            })
+    colocados_list = [
+        {
+            "id": row[0],
+            "user_id": row[1],
+            "bolsa_nome": row[2],
+            "escola_nome": row[3],
+            "tipo_contrato": row[4],
+            "escola_priority_id": row[5],
+            "placement_date": row[6],
+        }
+        for row in results
+    ]
 
-        return colocados_list
+    cursor.close()
+    connection.close()
 
-    except Exception as e:
-        print(f"Error: {e}")
-        return []  # Return an empty list in case of an error
-
-    finally:
-        cursor.close()
-        connection.close()
+    return colocados_list
         
         
 def count_users_by_bolsa(bolsa_id):
