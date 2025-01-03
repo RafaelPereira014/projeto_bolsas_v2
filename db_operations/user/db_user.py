@@ -118,7 +118,7 @@ def get_colocados_by_user_id(user_id):
         c.escola_priority_id, 
         c.placement_date
     FROM colocados AS c
-    LEFT JOIN bolsa AS b ON c.bolsa_id = b.id
+    LEFT JOIN Bolsa AS b ON c.bolsa_id = b.id
     LEFT JOIN contrato AS co ON c.contrato_id = co.id
     WHERE c.user_id = %s
     """
