@@ -116,11 +116,13 @@ def get_colocados_by_user_id(user_id):
         c.escola_nome, 
         co.tipo AS tipo_contrato, 
         c.escola_priority_id, 
-        c.placement_date
+        c.placement_date,
+        c.estado  -- Include estado from colocados
     FROM colocados AS c
     LEFT JOIN Bolsa AS b ON c.bolsa_id = b.id
     LEFT JOIN contrato AS co ON c.contrato_id = co.id
     WHERE c.user_id = %s
+    ORDER BY c.placement_date DESC
     """
     cursor.execute(query, (user_id,))
     results = cursor.fetchall()
@@ -134,6 +136,7 @@ def get_colocados_by_user_id(user_id):
             "tipo_contrato": row[4],
             "escola_priority_id": row[5],
             "placement_date": row[6],
+            "estado": row[7],  # Add estado to the result dictionary
         }
         for row in results
     ]
@@ -142,7 +145,6 @@ def get_colocados_by_user_id(user_id):
     connection.close()
 
     return colocados_list
-        
         
 def count_users_by_bolsa(bolsa_id):
     connection = connect_to_database()

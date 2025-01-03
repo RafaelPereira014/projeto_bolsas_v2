@@ -494,8 +494,8 @@ def submit_selection():
             WHERE id = %s
             """
             insert_query2 = """
-                INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date)
-                VALUES (%s, %s, %s, %s, %s, CURDATE())
+                INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
+                VALUES (%s, %s, %s, %s, %s, CURDATE(),'a aguardar resposta')
             """
             execute_update(update_query, (distribuicao, candidato['candidato_id']))
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
@@ -577,10 +577,37 @@ def update_status():
     cursor = conn.cursor()
 
     try:
-        # Update the user's status in the database
-        query = "UPDATE Users SET estado = %s WHERE id = %s"
-        cursor.execute(query, (new_status, user_id))
+        # Update the user's status in the Users table
+        update_query = "UPDATE Users SET estado = %s WHERE id = %s"
+        cursor.execute(update_query, (new_status, user_id))
         conn.commit()
+
+        # Fetch the last row for this user from colocados
+        fetch_query = """
+        SELECT 
+            id, user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado
+        FROM colocados
+        WHERE user_id = %s
+        ORDER BY placement_date DESC LIMIT 1
+        """
+        cursor.execute(fetch_query, (user_id,))
+        last_row = cursor.fetchone()
+
+        if last_row:
+            # Insert a new row in colocados with the same data but updated estado
+            insert_query = """
+            INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado)
+            VALUES (%s, %s, %s, %s, %s, NOW(), %s)
+            """
+            cursor.execute(insert_query, (
+                last_row[1],  # user_id
+                last_row[2],  # bolsa_id
+                last_row[3],  # escola_nome
+                last_row[4],  # contrato_id
+                last_row[5],  # escola_priority_id
+                new_status    # Update estado to match the new_status
+            ))
+            conn.commit()
 
         return jsonify({'success': True})
 
