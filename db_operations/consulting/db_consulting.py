@@ -427,7 +427,7 @@ def process_csv_and_update_db(csv_file_path):
                 nota = row["Nota_Final"]
 
                 # Check if the Nif exists in the database
-                cursor.execute("SELECT * FROM users WHERE NIF = %s", (nif,))
+                cursor.execute("SELECT * FROM Users WHERE NIF = %s", (nif,))
                 user = cursor.fetchone()
 
                 if user:  # If the Nif is found

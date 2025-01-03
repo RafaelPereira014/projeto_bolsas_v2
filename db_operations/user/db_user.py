@@ -58,7 +58,7 @@ def user_infos(user_id):
                u.avaliacao_curricular, u.prova_de_conhecimentos, u.nota_final, 
                u.estado, u.observacoes, u.distribuicao, u.NIF, u.local_prova,
                d.file_name, d.upload_date
-        FROM users u
+        FROM Users u
         LEFT JOIN documents d ON u.id = d.user_id  -- Use LEFT JOIN to include users with no documents
         WHERE u.id = %s
         """
