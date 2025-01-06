@@ -45,16 +45,16 @@
         <div class="content">
             <h2>Detalhes da Conta</h2>
             <form method="post" action="/update_account">
-                <label for="username">Nome de Usuário:</label>
+                <label for="username">Nome de utilizador:</label>
                 <input type="text" id="username" name="username" value="{{ user.username }}" required>
 
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" value="{{ user.email }}" required>
 
-                <label for="password">Nova Senha:</label>
+                <label for="password">Nova password:</label>
                 <input type="password" id="password" name="password">
 
-                <label for="confirm_password">Confirmar Senha:</label>
+                <label for="confirm_password">Confirmar password:</label>
                 <input type="password" id="confirm_password" name="confirm_password">
 
                 <button type="submit">Atualizar Conta</button>
