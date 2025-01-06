@@ -304,16 +304,39 @@ def update_account():
     
     return redirect(url_for('minhaconta'))  # Redirect back to the account details page
 
-# Route for main page with sidebar, header, footer, and table
 @app.route('/mainpage')
 def mainpage():
     no_bolsas = total_bolsas()
     no_escolas = total_escolas()
     no_users = total_users()
     no_colocados = total_colocados()
-    
-    return render_template('main.html',no_bolsas=no_bolsas,no_escolas=no_escolas,no_users=no_users,no_colocados=no_colocados)
+    all_schools = get_all_escola_names()
+    colocados = get_colocados()
 
+    colocados_per_escola = {escola: 0 for escola in all_schools}
+    total_aceite = 0
+    total_negado = 0
+
+    for colocado in colocados:
+        escola_nome = colocado['escola_nome']
+        estado = colocado['estado']
+        if escola_nome in colocados_per_escola:
+            if estado == 'aceite':
+                colocados_per_escola[escola_nome] += 1
+                total_aceite += 1
+            elif estado == 'negado':
+                total_negado += 1
+
+    return render_template(
+        'main.html',
+        no_bolsas=no_bolsas,
+        no_escolas=no_escolas,
+        no_users=no_users,
+        no_colocados=no_colocados,
+        colocados_per_escola=colocados_per_escola,
+        total_aceite=total_aceite,
+        total_negado=total_negado
+    )
 @app.route('/import_users_data')
 def import_users():
     

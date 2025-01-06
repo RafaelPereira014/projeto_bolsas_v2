@@ -477,3 +477,29 @@ def process_csv_and_update_db(csv_file_path):
     finally:
         cursor.close()
         connection.close()
+        
+def get_all_escola_names():
+    # Create a database connection
+    connection = connect_to_database()  # Ensure this is defined elsewhere
+    cursor = connection.cursor()
+
+    try:
+        # Query to get all escola names
+        query = """
+        SELECT nome AS escola_nome
+        FROM Escola
+        """
+        cursor.execute(query)  # No parameters needed
+        results = cursor.fetchall()
+
+        # Return results as a list of school names
+        return [row[0] for row in results]  # Extract school names
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return []  # Return an empty list on error
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
