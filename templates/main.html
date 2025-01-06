@@ -26,11 +26,19 @@
             <ul class="bolsas-menu" style="display:none;">
                 <li><a href="/Bolsas/SaoMiguel">Bolsa de Ilha São Miguel</a></li>
                 <li><a href="/Bolsas/Terceira">Bolsa de Ilha Terceira</a></li>
+                <li><a href="/Bolsas/SantaMaria">Bolsa de Ilha Santa Maria</a></li>
+                <li><a href="/Bolsas/Faial">Bolsa de Ilha Faial</a></li>
+                <li><a href="/Bolsas/Pico">Bolsa de Ilha Pico</a></li>
+                <li><a href="/Bolsas/SaoJorge">Bolsa de Ilha São Jorge</a></li>
+                <li><a href="/Bolsas/Graciosa">Bolsa de Ilha Graciosa</a></li>
+                <li><a href="/Bolsas/Flores">Bolsa de Ilha Flores</a></li>
+                <li><a href="/Bolsas/Corvo">Bolsa de Ilha Corvo</a></li>
             </ul>
             <ul>
                 <li><a href="/minhaconta">Minha conta</a></li>
                 <li><a href="/add_user">Adicionar candidato</a></li>
                 <li><a href="/import_users_data">Importar notas</a></li>
+
                 <li><a href="/logout">Terminar sessão</a></li>
             </ul>
         </div>
@@ -58,7 +66,7 @@
             <!-- Statistics Section -->
             <div class="statistics-row">
                 <div class="stat-card">
-                    <h3>Vagas por Ilha</h3>
+                    <h3>Vagas pedidas por Ilha</h3>
                     <canvas id="vagasChart"></canvas>
                 </div>
                 <div class="stat-card">
@@ -98,6 +106,11 @@
     </div>
 
     <script>
+        // Toggle Bolsas menu
+    document.querySelector('.toggle-button').addEventListener('click', function() {
+        const bolsasMenu = document.querySelector('.bolsas-menu');
+        bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
+    });
         // Vagas por Ilha Chart
         const vagasCtx = document.getElementById('vagasChart').getContext('2d');
         new Chart(vagasCtx, {
