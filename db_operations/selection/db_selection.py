@@ -1,6 +1,5 @@
 # db_selection.py
 
-
 import pymysql
 from config import db_config  # Adjust import according to your database config
 
@@ -18,7 +17,7 @@ def execute_query(query, params):
         cursor.execute(query, params)  # Executar a query com os parâmetros
         results = cursor.fetchall()  # Obter todos os resultados da consulta
         return results
-    except mysql.connector.Error as err:
+    except pymysql.connector.Error as err:
         print(f"Erro: {err}")
         return None
     finally:
@@ -108,7 +107,7 @@ def get_candidates_by_bolsa(bolsa_id, contrato_tipo):
         
         return results
 
-    except mysql.connector.Error as e:
+    except pymysql.connector.Error as e:
         print(f"Error: {e}")
         return None
     
@@ -142,3 +141,43 @@ def get_bolsa_id_for_school(escola_nome):
     except Exception as e:
         print(f"Error fetching bolsa_id for school {escola_nome}: {e}")
         return None  # Return None on error
+    
+def get_vagas_per_bolsa():
+   
+    try:
+        # Connect to the database
+        connection = connect_to_database()
+        cursor = connection.cursor(pymysql.cursors.DictCursor)  # Use dictionary cursor for easy result handling
+
+        # Define the query
+        query = """
+            SELECT 
+                b.nome AS bolsa_nome, 
+                SUM(vpb.total_vagas) AS total_vagas
+            FROM 
+                Bolsa AS b
+            LEFT JOIN 
+                vagas_per_bolsa AS vpb
+            ON 
+                b.id = vpb.bolsa_id
+            GROUP BY 
+                b.id, b.nome;
+        """
+
+        # Execute the query
+        cursor.execute(query)
+        results = cursor.fetchall()  # Fetch all results
+
+        # Return the results
+        return results
+
+    except Exception as e:
+        print(f"Error fetching vagas per bolsa: {e}")
+        return None  # Return None in case of an error
+
+    finally:
+        # Ensure resources are closed properly
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()

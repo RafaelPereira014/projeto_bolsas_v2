@@ -312,6 +312,11 @@ def mainpage():
     no_colocados = total_colocados()
     all_schools = get_all_escola_names()
     colocados = get_colocados()
+    vagas = get_vagas_per_bolsa()
+
+    for vaga in vagas:
+        vaga['total_vagas'] = int(vaga['total_vagas'] or 0)  # Replace None with 0
+
 
     colocados_per_escola = {escola: 0 for escola in all_schools}
     total_aceite = 0
@@ -335,7 +340,8 @@ def mainpage():
         no_colocados=no_colocados,
         colocados_per_escola=colocados_per_escola,
         total_aceite=total_aceite,
-        total_negado=total_negado
+        total_negado=total_negado,
+        vagas=vagas  # Pass fixed data
     )
 @app.route('/import_users_data')
 def import_users():
@@ -380,6 +386,10 @@ def limpar_estados():
             # Delete all rows from colocados
             delete_query = "DELETE FROM colocados"
             cursor.execute(delete_query)
+            
+            # Delete all rows from colocados
+            delete_query2 = "DELETE FROM vagas_per_bolsa"
+            cursor.execute(delete_query2)
             
             # Commit the changes
             connection.commit()
@@ -430,6 +440,29 @@ def submit_selection():
             'vagas_deficiencia_obrigatorias': int(vagas_deficiencia),
             'bolsa_id': bolsa_id
         }
+        
+        # Calculate total vagas
+        total_vagas = int(vagas_normais) + int(vagas_deficiencia)
+        
+        # Cursor for executing SQL queries
+        connection = connect_to_database()
+        cursor = connection.cursor()
+        
+        
+        # Prepare the INSERT statement
+        sql = """
+        INSERT INTO vagas_per_bolsa (bolsa_id,total_vagas)
+        VALUES (%s,%s);
+        """
+        
+        # Execute the query
+        cursor.execute(sql, (bolsa_id, total_vagas))
+        
+        # Commit after each insert (or batch commit later)
+        connection.commit()
+        cursor.close()
+        connection.close()
+
         bolsas_ids.append(bolsa_id)
 
     contrato_tipo = request.form['contrato_id']

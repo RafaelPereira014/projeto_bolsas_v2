@@ -67,7 +67,8 @@
             <div class="statistics-row">
                 <div class="stat-card">
                     <h3>Vagas pedidas por Ilha</h3>
-                    <canvas id="vagasChart"></canvas>
+                    <canvas id="vagasPerBolsaChart"></canvas>
+
                 </div>
                 <div class="stat-card">
                     <h3>Colocados por Escola</h3>
@@ -106,40 +107,50 @@
     </div>
 
     <script>
-        // Toggle Bolsas menu
-    document.querySelector('.toggle-button').addEventListener('click', function() {
-        const bolsasMenu = document.querySelector('.bolsas-menu');
-        bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
-    });
-        // Vagas por Ilha Chart
-        const vagasCtx = document.getElementById('vagasChart').getContext('2d');
-        new Chart(vagasCtx, {
-            type: 'bar',
+        const vagasData = {{ vagas | tojson }};
+        console.log(vagasData); // Debug data
+    
+        const bolsaLabels = vagasData.map(item => item.bolsa_nome);
+        const vagasCounts = vagasData.map(item => item.total_vagas);
+    
+        const vagasPerBolsaCtx = document.getElementById('vagasPerBolsaChart').getContext('2d');
+        new Chart(vagasPerBolsaCtx, {
+            type: 'bar',  // Vertical bar chart
             data: {
-                labels: ['São Miguel', 'Terceira', 'Santa Maria', 'Faial', 'Pico'],
+                labels: bolsaLabels,
                 datasets: [{
-                    label: 'Vagas',
-                    data: [30, 20, 10, 15, 25],
-                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
+                    label: 'Total Vagas',
+                    data: vagasCounts,
+                    backgroundColor: 'rgba(40, 167, 69, 0.5)', // Green
+                    borderColor: 'rgba(40, 167, 69, 1)', // Dark green border
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { display: false },
+                    legend: { display: false }, // Hide legend if not needed
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.raw} vagas`; // Show tooltip when hovering
+                            }
+                        }
+                    }
                 },
                 scales: {
-                    y: { beginAtZero: true }
+                    x: {
+                        title: { display: true, text: 'Bolsas' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Total Vagas' },
+                        beginAtZero: true // Ensure the y-axis starts at 0
+                    }
                 }
             }
         });
-
-        
-
-        
     </script>
+    
 
     <script>
         // Data passed from Flask
