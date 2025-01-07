@@ -315,7 +315,7 @@ def mainpage():
     vagas = get_vagas_per_bolsa()
 
     for vaga in vagas:
-        vaga['total_vagas'] = int(vaga['total_vagas'] or 0)  # Replace None with 0
+        vaga['total_vagas'] = int(vaga['total_vagas'] or 0)  
 
 
     colocados_per_escola = {escola: 0 for escola in all_schools}

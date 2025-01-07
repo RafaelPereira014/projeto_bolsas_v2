@@ -107,6 +107,11 @@
     </div>
 
     <script>
+        // Toggle bolsas menu
+        document.querySelector('.toggle-button').addEventListener('click', function() {
+            const bolsasMenu = document.querySelector('.bolsas-menu');
+            bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
+        });
         const vagasData = {{ vagas | tojson }};
         console.log(vagasData); // Debug data
     
