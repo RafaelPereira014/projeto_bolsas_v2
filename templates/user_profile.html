@@ -90,7 +90,11 @@
                     {% if user_info.estado == "a aguardar resposta" or user_info.estado == "aceite" %}
                     <tr>
                         <th>Distribuição SGC:</th>
-                        <td>{{ user_info.distribuicao }}</td>
+                        <td>
+                            <a href="{{ user_info.distribuicao }}" target="_blank">
+                              {{ user_info.distribuicao }}
+                            </a>
+                          </td>
                     </tr>
                     {%endif%}
                 </table>
