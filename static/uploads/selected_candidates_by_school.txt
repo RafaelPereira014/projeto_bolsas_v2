@@ -1,0 +1,8 @@
+
+Selected Candidates by School:
+Escola                         Candidato ID    Nome                           Nota       Deficiência    
+----------------------------------------------------------------------------------------------------
+EBI DOS BISCOITOS              1086            Matilde Macedo                 18.10      não            
+EBI DOS BISCOITOS              1011            Valentina Pinho                17.46      sim            
+EBI DOS BISCOITOS              1039            Mélanie de Marques             17.15      sim            
+EBI DOS BISCOITOS              1054            Noa Mota                       16.42      não            

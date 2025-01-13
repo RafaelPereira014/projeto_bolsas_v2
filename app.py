@@ -1,10 +1,11 @@
 from datetime import date
 import os
-from flask import request, redirect, url_for, flash
+from flask import abort, request, redirect, url_for, flash
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
 from flask import request, send_file
 from flask import render_template, request, send_file
 import io
+import csv
 from openpyxl import Workbook
 import pymysql
 from werkzeug.security import generate_password_hash
@@ -51,7 +52,7 @@ def execute_query(query, params):
 def create_connection():
     connection = None
     try:
-        # Use the config values from the db_config
+        
         connection = pymysql.connect(
             host=db_config['host'],
             user=db_config['user'],
@@ -130,8 +131,8 @@ def upload_document_bolsa(bolsa_id):
         if exists > 0:
             cursor.close()
             connection.close()
-            flash('File already exists')  # Inform the user
-            return redirect(url_for('metadatapage'))  # Redirect on existing file
+            flash('File already exists')  
+            return redirect(url_for('metadatapage'))  
 
         # Insert the filename and bolsa_id into the documents table
         insert_query = """
@@ -145,10 +146,16 @@ def upload_document_bolsa(bolsa_id):
 
         return redirect(url_for('metadatapage'))  # Redirect to the bolsa page
 
-# Route for downloading the document
-@app.route('/uploads/<filename>')
-def download_document(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/download/<file_name>', methods=['GET'])
+def download_file(file_name):
+    # Define the directory where files are stored
+    upload_folder = '/Users/rafaelpereira/Desktop/projeto_Bolsas/static/uploads'
+    
+    try:
+        # Serve the file from the uploads directory
+        return send_from_directory(upload_folder, file_name, as_attachment=True, mimetype='text/plain')
+    except FileNotFoundError:
+        abort(404, description="File not found")
 
 @app.route('/minhaconta', methods=['GET', 'POST'])
 def minhaconta():
@@ -391,6 +398,10 @@ def limpar_estados():
             delete_query2 = "DELETE FROM vagas_per_bolsa"
             cursor.execute(delete_query2)
             
+            # Delete all rows from colocados
+            delete_query3 = "DELETE FROM documents"
+            cursor.execute(delete_query3)
+            
             # Commit the changes
             connection.commit()
     except Exception as e:
@@ -430,6 +441,7 @@ def submit_selection():
     # Get the list of schools with vacancies
     escolas_data = request.form.getlist('escolas[]')
     vagas_per_escola = {}
+    
 
     # Process each escola_data to capture vagas_normais and vagas_deficiencia
     for escola_data in escolas_data:
@@ -533,13 +545,8 @@ def submit_selection():
                 selected_candidates.add(candidato_id)
                 vagas_per_escola[candidato_escola_nome]['vagas_normais'] -= 1
 
-    # Log selected candidates by school
-    print("\nSelected Candidates by School:")
-    print(f"{'Escola':<30} {'Candidato ID':<15} {'Nome':<30} {'Nota':<10} {'Deficiência':<15}")
-    print("-" * 100)
-    for escola_nome, candidatos in candidates_by_school.items():
-        for candidato in candidatos:
-            print(f"{escola_nome:<30} {candidato['candidato_id']:<15} {candidato['nome']:<30} {candidato['nota_final']:<10} {candidato['deficiencia']:<15}")
+    save_candidates_to_file_and_db(candidates_by_school)
+               
 
     # Update user status and insert selected candidates into 'Colocados' table
     for escola_nome, candidatos in candidates_by_school.items():

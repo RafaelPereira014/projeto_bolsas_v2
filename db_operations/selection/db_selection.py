@@ -1,7 +1,10 @@
 # db_selection.py
 
+from datetime import datetime
+import os
 import pymysql
 from config import db_config  # Adjust import according to your database config
+
 
 def connect_to_database():
     """Establishes a connection to the MySQL database."""
@@ -181,3 +184,53 @@ def get_vagas_per_bolsa():
             cursor.close()
         if connection:
             connection.close()
+
+def save_candidates_to_file_and_db(candidates_by_school):
+    # Set the upload folder and ensure it exists
+    upload_folder = 'static/uploads'
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+
+    # Generate a unique file name
+    timestamp = datetime.now().strftime('%Y%m%d')
+    file_name = f'selected_candidates_{timestamp}.txt'
+    file_path = os.path.join(upload_folder, file_name)
+
+    # Connect to the database
+    conn = connect_to_database()
+    cursor = conn.cursor()
+
+    try:
+        # Write data to the file
+        with open(file_path, 'w') as file:
+            file.write("\nSelected Candidates by School:\n")
+            file.write(f"{'Escola':<30} {'Candidato ID':<15} {'Nome':<30} {'Nota':<10} {'Deficiência':<15}\n")
+            file.write("-" * 100 + "\n")
+
+            for escola_nome, candidatos in candidates_by_school.items():
+                for candidato in candidatos:
+                    file.write(
+                        f"{escola_nome:<30} {candidato['candidato_id']:<15} {candidato['nome']:<30} "
+                        f"{candidato['nota_final']:<10} {candidato['deficiencia']:<15}\n"
+                        f"{'------------------------------------------------------------------------'}"
+                    )
+
+                    # Insert the file into the documents table
+                    cursor.execute(
+                        "INSERT INTO documents (user_id, file_name) VALUES (%s, %s)",
+                        (candidato['candidato_id'], file_name),
+                    )
+
+        # Commit the transaction after writing all candidates
+        conn.commit()
+
+        print(f"File saved at {file_path} and database entries created successfully.")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        conn.rollback()  # Roll back the transaction if an error occurs
+
+    finally:
+        # Close the database connection
+        cursor.close()
+        conn.close()
