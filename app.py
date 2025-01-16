@@ -632,6 +632,7 @@ def get_escolas(bolsa_id):
 
 @app.route('/update_status', methods=['POST'])
 def update_status():
+    user_logged = session['username']
     data = request.json
     user_id = data['user_id']
     new_status = data['new_status']
@@ -659,8 +660,8 @@ def update_status():
         if last_row:
             # Insert a new row in colocados with the same data but updated estado
             insert_query = """
-            INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado)
-            VALUES (%s, %s, %s, %s, %s, NOW(), %s)
+            INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado,alterado_por)
+            VALUES (%s, %s, %s, %s, %s, NOW(), %s,%s)
             """
             cursor.execute(insert_query, (
                 last_row[1],  # user_id
@@ -668,7 +669,8 @@ def update_status():
                 last_row[3],  # escola_nome
                 last_row[4],  # contrato_id
                 last_row[5],  # escola_priority_id
-                new_status    # Update estado to match the new_status
+                new_status,
+                user_logged
             ))
             conn.commit()
 

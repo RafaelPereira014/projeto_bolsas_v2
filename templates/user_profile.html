@@ -139,6 +139,7 @@
                                 <th>Tipo contrato</th>
                                 <th>Prioridade</th>
                                 <th>Data</th>
+                                <th>Alterado por</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,6 +152,7 @@
                                         <td>{{ colocado.tipo_contrato }}</td>
                                         <td>{{ colocado.escola_priority_id }}</td>
                                         <td>{{ colocado.placement_date }}</td>
+                                        <td>{{ colocado.alterado_por if colocado.alterado_por else '-' }}</td>
                                     </tr>
                                 {% endfor %}
                             {% else %}

@@ -117,7 +117,8 @@ def get_colocados_by_user_id(user_id):
         co.tipo AS tipo_contrato, 
         c.escola_priority_id, 
         c.placement_date,
-        c.estado  -- Include estado from colocados
+        c.estado,
+        c.alterado_por 
     FROM colocados AS c
     LEFT JOIN Bolsa AS b ON c.bolsa_id = b.id
     LEFT JOIN contrato AS co ON c.contrato_id = co.id
@@ -137,6 +138,7 @@ def get_colocados_by_user_id(user_id):
             "escola_priority_id": row[5],
             "placement_date": row[6],
             "estado": row[7],  # Add estado to the result dictionary
+            "alterado_por": row[8]
         }
         for row in results
     ]
