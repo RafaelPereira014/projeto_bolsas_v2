@@ -367,21 +367,19 @@ def get_all_user_scores(page=1, per_page=10):
 def get_filtered_user_scores(search_query, page, per_page):
     connection = connect_to_database()
     if connection:
-        cursor = connection.cursor()
-        offset = (page - 1) * per_page
-        search_query = f"%{search_query}%"
-        query = """
-        SELECT u.id, u.nome, u.nota_final, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids, u.estado
-        FROM Users u
-        JOIN userbolsas ub ON u.id = ub.user_id
-        WHERE u.nome LIKE %s
-        GROUP BY u.id
-        ORDER BY u.nota_final DESC
-        LIMIT %s OFFSET %s
-        """
-        cursor.execute(query, (search_query, per_page, offset))
-        results = cursor.fetchall()
-        cursor.close()
+        with connection.cursor() as cursor:
+            offset = (page - 1) * per_page
+            query = """
+            SELECT u.id, u.nome, u.nota_final, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids, u.estado
+            FROM Users u
+            LEFT JOIN userbolsas ub ON u.id = ub.user_id
+            WHERE u.nome LIKE %s
+            GROUP BY u.id
+            ORDER BY u.nota_final DESC
+            LIMIT %s OFFSET %s
+            """
+            cursor.execute(query, (f"%{search_query}%", per_page, offset))
+            results = cursor.fetchall()
         connection.close()
         return results
     return []
@@ -389,14 +387,12 @@ def get_filtered_user_scores(search_query, page, per_page):
 def get_filtered_user_count(search_query):
     connection = connect_to_database()
     if connection:
-        cursor = connection.cursor()
-        search_query = f"%{search_query}%"
-        query = "SELECT COUNT(*) FROM Users WHERE nome LIKE %s"
-        cursor.execute(query, (search_query,))
-        results = cursor.fetchone()
-        cursor.close()
+        with connection.cursor() as cursor:
+            query = "SELECT COUNT(*) FROM Users WHERE nome LIKE %s"
+            cursor.execute(query, (f"%{search_query}%",))
+            result = cursor.fetchone()
         connection.close()
-        return results[0] if results else 0
+        return result[0] if result else 0
     return 0
 
 

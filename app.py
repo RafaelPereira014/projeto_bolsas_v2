@@ -530,6 +530,7 @@ def submit_selection():
         candidato_priority = candidate['escola_priority_id']
         candidato_escola_nome = candidate['escola_nome']
         candidato_deficiencia = candidate['deficiencia']
+        
 
         if candidato_escola_nome in vagas_per_escola and candidato_id not in selected_candidates:
             vagas_info = vagas_per_escola[candidato_escola_nome]
@@ -558,7 +559,7 @@ def submit_selection():
             """
             insert_query2 = """
                 INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
-                VALUES (%s, %s, %s, %s, %s, CURDATE(),'a aguardar resposta')
+                VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
             """
             execute_update(update_query, (distribuicao, candidato['candidato_id']))
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
