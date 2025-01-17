@@ -73,6 +73,32 @@
             background-color: #d3d3d3; /* Light gray color */
         }
     </style>
+    <style>
+        /* Your existing styles */
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .search-container input {
+            padding: 10px;
+            width: 300px;
+            box-sizing: border-box;
+            margin-right: 10px;
+        }
+        .search-container button {
+            padding: 10px 15px;
+            margin-right: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -119,12 +145,14 @@
                 <button data-estado="negado" class="filter-button">Excluído</button>
             </div>
 
-            <!-- Search bar -->
-            <div class="search-container">
-                <input type="text" id="search-bar" placeholder="Procurar por nome...">
+             <!-- Search Input -->
+             <div class="search-container">
+                <input type="text" id="search-input" placeholder="Pesquisar nome do candidato...">
+                <button id="search-button">Pesquisar</button>
+                <button id="clear-button">Limpar</button>
             </div>
 
-            
+
             <form method="POST" action="{{ url_for('limpar_estados') }}">
                 <button type="submit" class="btn-limpar-estados">Limpar Estados</button>
             </form>
@@ -134,7 +162,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                       
                         <th>Nome Candidato</th>
                         <th>Classificação Final</th>
                         <th><a href="{{ url_for('bolsa_sao_miguel') }}">Bolsa de Ilha de São Miguel</a></th>
@@ -153,7 +181,6 @@
                     {% if scores %}
                         {% for score in scores %}
                         <tr data-estado="{{ score.estado }}">
-                            <td>{{ loop.index + (current_page - 1) * per_page }}</td>
                             <td><a href="{{ url_for('user_profile', user_id=score.id) }}">{{ score.nome }}</a></td>
                             <td>{{ score.nota_final }}</td>
                             <td>{{ '✔️' if 1 in score.bolsa_ids else '❌' }}</td>
@@ -188,78 +215,121 @@
                     {% endif %}
                 </tbody>
             </table>
-
-            <div class="pagination">
-                {% if current_page > 1 %}
-                    <a href="{{ url_for('metadatapage', page=current_page-1, search=search_query) }}">Anterior</a>
-                {% endif %}
-                
-                Página {{ current_page }} de {{ total_pages }}
-                
-                {% if current_page * per_page < total_count %}
-                    <a href="{{ url_for('metadatapage', page=current_page+1, search=search_query) }}">Próxima</a>
-                {% endif %}
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <button id="prev-page" disabled>Anterior</button>
+                <span id="page-info">Página 1 de 1</span>
+                <button id="next-page" disabled>Próxima</button>
             </div>
+
+            
         </div>
 
         
     </div>
 </body>
-
 <script>
-    // Toggle Bolsas menu
     document.querySelector('.toggle-button').addEventListener('click', function() {
         const bolsasMenu = document.querySelector('.bolsas-menu');
         bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
     });
-
-    // Function to filter table based on search input
-    document.getElementById('search-bar').addEventListener('input', function() {
-        const query = this.value.toLowerCase(); // Get the search query
-        const rows = document.querySelectorAll('#table-body tr'); // Select all table rows
-
-        rows.forEach(row => {
-            const nameCell = row.cells[1].textContent.toLowerCase(); // Get the name cell content
-            row.style.display = nameCell.includes(query) ? '' : 'none'; // Show or hide row
-        });
-    });
-
-    // Filter table based on estado using filter buttons
-    const filterButtons = document.querySelectorAll('.filter-button');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const selectedEstado = this.getAttribute('data-estado').trim().toLowerCase();
-            console.log("Selected Estado:", selectedEstado); // Debugging
-
-            const rows = document.querySelectorAll('#table-body tr');
-
-            // Remove active class from all buttons and add to the clicked button
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-
-            rows.forEach(row => {
-                const estado = row.getAttribute('data-estado').trim().toLowerCase();
-                console.log("Row Estado:", estado); // Debugging
-
-                // Show row if it matches the selected estado or if "all" is selected
-                if (selectedEstado === 'all' || estado === selectedEstado) {
-                    row.style.display = ''; // Show row
-                } else {
-                    row.style.display = 'none'; // Hide row
-                }
-
-                // Add a specific class for rows with "negado" estado
-                if (estado === 'negado') {
-                    row.classList.add('negado-row');
-                } else {
-                    row.classList.remove('negado-row');
-                }
-            });
-        });
-    });
-
     
+    const rowsPerPage = 10;
+    let currentPage = 1;
+    const tableBody = document.getElementById('table-body');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const clearButton = document.getElementById('clear-button');
+    const prevPageBtn = document.getElementById('prev-page');
+    const nextPageBtn = document.getElementById('next-page');
+    const pageInfo = document.getElementById('page-info');
+
+    function updateTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredRows = rows.filter(row => 
+            row.textContent.toLowerCase().includes(searchTerm)
+        );
+
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        currentPage = Math.min(currentPage, totalPages);
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        tableBody.innerHTML = '';
+        filteredRows.slice(start, end).forEach(row => tableBody.appendChild(row));
+
+        // Update pagination
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
+    }
+
+    searchButton.addEventListener('click', () => {
+        currentPage = 1;
+        updateTable();
+    });
+
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        currentPage = 1;
+        updateTable();
+    });
+
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTable();
+        }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+        currentPage++;
+        updateTable();
+    });
+
+    // Initial table update
+    updateTable();
 </script>
+<script>
+    // Select all filter buttons and table rows
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const tableRows = document.querySelectorAll('#table-body tr');
+
+    // Function to filter rows based on selected estado
+    function filterRows(estado) {
+        tableRows.forEach(row => {
+            const rowEstado = row.getAttribute('data-estado');
+            if (estado === 'all' || rowEstado === estado) {
+                row.style.display = ''; // Show matching rows
+            } else {
+                row.style.display = 'none'; // Hide non-matching rows
+            }
+        });
+    }
+
+    // Add click event listeners to all filter buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Add active class to the clicked button
+            button.classList.add('active');
+
+            // Get estado from the clicked button
+            const selectedEstado = button.getAttribute('data-estado');
+
+            // Filter rows based on the selected estado
+            filterRows(selectedEstado);
+        });
+    });
+
+    // Initialize with all rows visible
+    filterRows('all');
+</script>
+
     
 
 </html>

@@ -530,7 +530,6 @@ def submit_selection():
         candidato_priority = candidate['escola_priority_id']
         candidato_escola_nome = candidate['escola_nome']
         candidato_deficiencia = candidate['deficiencia']
-        
 
         if candidato_escola_nome in vagas_per_escola and candidato_id not in selected_candidates:
             vagas_info = vagas_per_escola[candidato_escola_nome]
@@ -597,21 +596,13 @@ def send_email_route():
     
 @app.route('/consulta')
 def metadatapage():
-    search_query = request.args.get('search', '')  # Get search query if it exists
-    page = int(request.args.get('page', 1))  # Get current page, default is 1
-    per_page = 10  # Number of records per page
+    
+    scores = get_all_user_scores()  # Fetch paginated results
+    total_count = get_total_user_count()  # Count total results
 
-    # Modify the query to search by name if a search term is provided
-    if search_query:
-        scores = get_filtered_user_scores(search_query, page, per_page)  # Fetch filtered results
-        total_count = get_filtered_user_count(search_query)  # Count total filtered results
-    else:
-        scores = get_all_user_scores(page, per_page)  # Fetch paginated results
-        total_count = get_total_user_count()  # Count total results
+    
 
-    total_pages = (total_count + per_page - 1) // per_page  # Calculate total number of pages
-
-    return render_template('consulta.html', scores=scores, total_pages=total_pages, current_page=page, search_query=search_query, per_page=per_page, total_count=total_count)
+    return render_template('consulta.html', scores=scores,  total_count=total_count)
 
 @app.route('/view_escolas/<int:user_id>/<int:bolsa_id>')
 def fetch_escolas(user_id, bolsa_id):

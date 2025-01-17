@@ -325,21 +325,19 @@ def get_total_user_count():
         return results[0] if results else 0
     return 0
 
-def get_all_user_scores(page=1, per_page=10):
+def get_all_user_scores():
     connection = connect_to_database()
     cursor = connection.cursor()
 
     try:
-        offset = (page - 1) * per_page  # Calculate the offset for pagination
         query = """
         SELECT u.id, u.nome, u.nota_final, u.estado, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids
         FROM Users u
         LEFT JOIN userbolsas ub ON u.id = ub.user_id 
         GROUP BY u.id
         ORDER BY u.nota_final DESC
-        LIMIT %s OFFSET %s
         """
-        cursor.execute(query, (per_page, offset))  # Pass parameters for pagination
+        cursor.execute(query, )  # Pass parameters for pagination
         results = cursor.fetchall()
 
         scores = []
@@ -364,22 +362,23 @@ def get_all_user_scores(page=1, per_page=10):
         cursor.close()
         connection.close()
 
-def get_filtered_user_scores(search_query, page, per_page):
+def get_filtered_user_scores():
     connection = connect_to_database()
     if connection:
-        with connection.cursor() as cursor:
-            offset = (page - 1) * per_page
-            query = """
-            SELECT u.id, u.nome, u.nota_final, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids, u.estado
-            FROM Users u
-            LEFT JOIN userbolsas ub ON u.id = ub.user_id
-            WHERE u.nome LIKE %s
-            GROUP BY u.id
-            ORDER BY u.nota_final DESC
-            LIMIT %s OFFSET %s
-            """
-            cursor.execute(query, (f"%{search_query}%", per_page, offset))
-            results = cursor.fetchall()
+        cursor = connection.cursor()
+        
+        query = """
+        SELECT u.id, u.nome, u.nota_final, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids, u.estado
+        FROM Users u
+        JOIN userbolsas ub ON u.id = ub.user_id
+       
+        GROUP BY u.id
+        ORDER BY u.nota_final DESC
+       
+        """
+        cursor.execute(query, )
+        results = cursor.fetchall()
+        cursor.close()
         connection.close()
         return results
     return []
@@ -387,12 +386,14 @@ def get_filtered_user_scores(search_query, page, per_page):
 def get_filtered_user_count(search_query):
     connection = connect_to_database()
     if connection:
-        with connection.cursor() as cursor:
-            query = "SELECT COUNT(*) FROM Users WHERE nome LIKE %s"
-            cursor.execute(query, (f"%{search_query}%",))
-            result = cursor.fetchone()
+        cursor = connection.cursor()
+        search_query = f"%{search_query}%"
+        query = "SELECT COUNT(*) FROM Users WHERE nome LIKE %s"
+        cursor.execute(query, (search_query,))
+        results = cursor.fetchone()
+        cursor.close()
         connection.close()
-        return result[0] if result else 0
+        return results[0] if results else 0
     return 0
 
 
