@@ -229,87 +229,86 @@
     </div>
 </body>
 <script>
-    document.querySelector('.toggle-button').addEventListener('click', function() {
-        const bolsasMenu = document.querySelector('.bolsas-menu');
-        bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
+    const rowsPerPage = 10;
+    let currentPage = 1;
+    const tableBody = document.getElementById('table-body');
+    const rows = Array.from(tableBody.querySelectorAll('tr'));
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const clearButton = document.getElementById('clear-button');
+    const prevPageBtn = document.getElementById('prev-page');
+    const nextPageBtn = document.getElementById('next-page');
+    const pageInfo = document.getElementById('page-info');
+    const filterButtons = document.querySelectorAll('.filter-button');
+    let selectedEstado = 'all';
+
+    function updateTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filteredRows = rows.filter(row => {
+            const rowEstado = row.getAttribute('data-estado');
+            const matchesSearch = row.textContent.toLowerCase().includes(searchTerm);
+            const matchesFilter = selectedEstado === 'all' || rowEstado === selectedEstado;
+            return matchesSearch && matchesFilter;
+        });
+
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        currentPage = Math.min(currentPage, totalPages);
+
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        tableBody.innerHTML = '';
+        filteredRows.slice(start, end).forEach(row => tableBody.appendChild(row));
+
+        // Update pagination
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
+        pageInfo.textContent = `Página ${currentPage} de ${totalPages || 1}`;
+    }
+
+    searchButton.addEventListener('click', () => {
+        currentPage = 1;
+        updateTable();
     });
-    document.addEventListener('DOMContentLoaded', () => {
-        const filterButtons = document.querySelectorAll('.filter-button');
-        const tableRows = Array.from(document.querySelectorAll('#table-body tr'));
-        const prevPageButton = document.getElementById('prev-page');
-        const nextPageButton = document.getElementById('next-page');
-        const pageInfo = document.getElementById('page-info');
-    
-        let currentPage = 1;
-        const rowsPerPage = 10; // Number of rows per page
-        let filteredRows = tableRows; // Rows to be displayed based on the filter
-    
-        // Function to filter rows based on estado
-        function filterRows(estado) {
-            filteredRows = tableRows.filter(row => {
-                const rowEstado = row.getAttribute('data-estado');
-                return estado === 'all' || rowEstado === estado;
-            });
-    
-            // Reset to the first page when the filter changes
+
+    clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        currentPage = 1;
+        updateTable();
+    });
+
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTable();
+        }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+        currentPage++;
+        updateTable();
+    });
+
+    // Add click event listeners to all filter buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Add active class to the clicked button
+            button.classList.add('active');
+
+            // Update selectedEstado from the clicked button
+            selectedEstado = button.getAttribute('data-estado');
+
+            // Reset to first page and update the table
             currentPage = 1;
-            updatePagination();
-        }
-    
-        // Function to update pagination
-        function updatePagination() {
-            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-            pageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
-    
-            // Enable or disable pagination buttons
-            prevPageButton.disabled = currentPage === 1;
-            nextPageButton.disabled = currentPage === totalPages || totalPages === 0;
-    
-            renderCurrentPage();
-        }
-    
-        // Function to render rows for the current page
-        function renderCurrentPage() {
-            tableRows.forEach(row => (row.style.display = 'none')); // Hide all rows
-    
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = startIndex + rowsPerPage;
-    
-            filteredRows.slice(startIndex, endIndex).forEach(row => {
-                row.style.display = ''; // Show rows for the current page
-            });
-        }
-    
-        // Add click event listeners to pagination buttons
-        prevPageButton.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePagination();
-            }
+            updateTable();
         });
-    
-        nextPageButton.addEventListener('click', () => {
-            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePagination();
-            }
-        });
-    
-        // Add click event listeners to filter buttons
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                filterButtons.forEach(btn => btn.classList.remove('active')); // Remove active class
-                button.classList.add('active'); // Add active class to clicked button
-    
-                const selectedEstado = button.getAttribute('data-estado');
-                filterRows(selectedEstado); // Apply filter
-            });
-        });
-    
-        // Initialize with all rows visible
-        filterRows('all');
     });
+
+    // Initial table update
+    updateTable();
 </script>
 
     
