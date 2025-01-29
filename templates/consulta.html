@@ -229,6 +229,10 @@
     </div>
 </body>
 <script>
+    document.querySelector('.toggle-button').addEventListener('click', function() {
+        const bolsasMenu = document.querySelector('.bolsas-menu');
+        bolsasMenu.style.display = bolsasMenu.style.display === 'block' ? 'none' : 'block';
+    });
     const rowsPerPage = 10;
     let currentPage = 1;
     const tableBody = document.getElementById('table-body');
