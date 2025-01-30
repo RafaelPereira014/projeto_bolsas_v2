@@ -444,13 +444,15 @@ def submit_selection():
     
 
     # Process each escola_data to capture vagas_normais and vagas_deficiencia
+    # Process each escola_data to capture vagas_normais, vagas_deficiencia, and distribuiçao
     for escola_data in escolas_data:
-        # Assuming escola_data is formatted as 'escola_nome:vagas_normais:vagas_deficiencia:bolsa_id'
-        escola_nome, vagas_normais, vagas_deficiencia, bolsa_id = escola_data.split(':')
+        # Assuming escola_data is formatted as 'escola_nome:vagas_normais:vagas_deficiencia:bolsa_id:distribuicao'
+        escola_nome, vagas_normais, vagas_deficiencia, bolsa_id, distribuicao = escola_data.split(':')
         vagas_per_escola[escola_nome] = {
             'vagas_normais': int(vagas_normais),
             'vagas_deficiencia_obrigatorias': int(vagas_deficiencia),
-            'bolsa_id': bolsa_id
+            'bolsa_id': bolsa_id,
+            'distribuicao': distribuicao
         }
         
         # Calculate total vagas
@@ -478,7 +480,7 @@ def submit_selection():
         bolsas_ids.append(bolsa_id)
 
     contrato_tipo = request.form['contrato_id']
-    distribuicao = request.form['distribuicao']
+    
 
     initial_vagas_per_escola = {escola_nome: {
         'vagas_normais': vagas_info['vagas_normais'],
@@ -550,6 +552,7 @@ def submit_selection():
 
     # Update user status and insert selected candidates into 'Colocados' table
     for escola_nome, candidatos in candidates_by_school.items():
+        distrib = vagas_per_escola[escola_nome]['distribuicao']
         for candidato in candidatos:
             update_query = """
             UPDATE Users
@@ -560,7 +563,7 @@ def submit_selection():
                 INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
                 VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
             """
-            execute_update(update_query, (distribuicao, candidato['candidato_id']))
+            execute_update(update_query, (distrib, candidato['candidato_id']))
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
 
     return render_template('resultados.html', 
