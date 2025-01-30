@@ -1,7 +1,0 @@
-
-Selected Candidates by School:
-Escola                         Candidato ID    Nome                           Nota       Deficiência    
-----------------------------------------------------------------------------------------------------
-EBS TOMÁS DE BORBA             1086            Matilde Macedo                 18.10      não            
-------------------------------------------------------------------------ES JERÓNIMO EMILIANO ANDRADE   1040            Igor Neves                     17.62      não            
-------------------------------------------------------------------------
