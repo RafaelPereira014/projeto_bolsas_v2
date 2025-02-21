@@ -583,10 +583,11 @@ def submit_selection():
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
                         
             user_info = user_infos(candidato['candidato_id'])
+            escola_info = get_escola_info(candidato['escola_nome'])
             data_to_send = {
                 'NIF': user_info.get("NIF", None),
                 'Bolsa_id': bolsa_id,
-                'Escola_nome': candidato['escola_nome'],
+                'COD_EST': escola_info.get("COD_EST", None),
                 'Data_colocacao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Current date and time in the correct format
                 'Estado': 'A aguardar resposta'
             }

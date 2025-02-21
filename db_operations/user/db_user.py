@@ -217,4 +217,28 @@ def update_additional_info(user_id, additional_info):
     connection.commit()
     cursor.close()
     connection.close()
+
+def get_escola_info(escola_nome):
+    connection = connect_to_database()
+    cursor = connection.cursor()
+    try:
+        query = """
+            SELECT * FROM Escola WHERE nome = %s
+        """
+        cursor.execute(query, (escola_nome,))
+        escola_info = cursor.fetchone()  # Fetch the first matching record
+
+        if escola_info:
+            columns = [col[0] for col in cursor.description]  # Get column names
+            escola_info_dict = dict(zip(columns, escola_info))
+            return escola_info_dict
+
+        return None  # If no result is found, return None
+    except Exception as e:
+        print(f"Error retrieving escola info: {e}")
+        return None
+    finally:
+        cursor.close()
+        connection.close()
+    
     
