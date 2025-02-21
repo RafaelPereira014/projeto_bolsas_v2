@@ -575,7 +575,7 @@ def submit_selection():
                 'Bolsa_id': bolsa_id,
                 'Escola_nome': candidato['escola_nome'],
                 'Data_colocacao': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
-                'Estado': 'Pendente'
+                'Estado': 'A aguardar resposta'
             }
 
             api_url = 'https://api.edu.azores.gov.pt/colocados'  
@@ -690,6 +690,8 @@ def update_status():
                 user_logged
             ))
             conn.commit()
+        
+        
 
         return jsonify({'success': True})
 
