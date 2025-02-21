@@ -570,38 +570,12 @@ def submit_selection():
             """
             
                 
-            print("Executing Update Query:")
-            print(f"Query: {update_query}")
-            print(f"Parameters: {distrib}, {candidato['candidato_id']}")
-
+    
             execute_update(update_query, (distrib, candidato['candidato_id']))
-
-            print("Executing Insert Query:")
-            print(f"Query: {insert_query2}")
-            print(f"Parameters: {candidato['candidato_id']}, {bolsa_id}, {candidato['escola_nome']}, {contrato_tipo}, {candidato['escola_priority_id']}")
-
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
-                        
-            user_info = user_infos(candidato['candidato_id'])
-            escola_info = get_escola_info(candidato['escola_nome'])
-            data_to_send = {
-                'NIF': user_info.get("NIF", None),
-                'Bolsa_id': bolsa_id,
-                'COD_EST': escola_info.get("COD_EST", None),
-                'Data_colocacao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Current date and time in the correct format
-                'Estado': 'A aguardar resposta'
-            }
-
-            #api_url = 'http://127.0.0.1:8081/colocados'  
-            api_url = 'https://api.edu.azores.gov.pt/colocados'  
-            try:
-                response = requests.post(api_url, json=data_to_send)
-                if response.status_code == 200:
-                    print("Data successfully sent to /colocados")
-                else:
-                    print(f"Error sending data: {response.status_code}")
-            except requests.exceptions.RequestException as e:
-                print(f"Error: {e}")
+            
+                  
+        
 
     return render_template('resultados.html', 
                            candidates_by_school=candidates_by_school, 
@@ -703,23 +677,35 @@ def update_status():
             ))
             conn.commit()
         
-        user_info = user_infos(user_id)
-        data_to_send = {
-            'NIF': user_info.get("NIF", None),
-            'Estado': new_status
-        }
+        
+        if new_status == 'Aceite':
+            user_info = user_infos(user_id)  # Get user info
+            escola_info = get_escola_info(last_row[3])  # Get escola info using the correct column for the school name/code
+            bolsa_id = get_bolsa_id_for_school(last_row[3])  # Get bolsa_id
 
-        #api_url = 'http://127.0.0.1:8081/update_state'
-        api_url = 'https://api.edu.azores.gov.pt/update_state'
-        try:
-            response = requests.post(api_url, json=data_to_send)
-            if response.status_code == 200:
-                print("Data successfully sent to /update_state")
-            else:
-                print(f"Error sending data: {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            print(f"Error: {e}")
+            # Prepare data to send to API
+            data_to_send = {
+                'NIF': user_info.get("NIF", None),
+                'Bolsa_id': bolsa_id,
+                'COD_EST': escola_info.get("COD_EST", None),
+                'Data_colocacao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Current date and time in the correct format
+                'Estado': 'Aceite'  # The state to be sent
+            }
 
+            # Print the data before sending it
+            #print("Data to send to /update_state:", data_to_send)
+
+            #api_url = 'http://127.0.0.1:8081/colocados'  
+            api_url = 'https://api.edu.azores.gov.pt/colocados'  
+
+            try:
+                response = requests.post(api_url, json=data_to_send)
+                if response.status_code == 200:
+                    print("Data successfully sent to /update_state")
+                else:
+                    print(f"Error sending data: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Error: {e}")
         
         
 
