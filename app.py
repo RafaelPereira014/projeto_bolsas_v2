@@ -574,7 +574,7 @@ def submit_selection():
                 'NIF': user_info.get("NIF", None),
                 'Bolsa_id': bolsa_id,
                 'Escola_nome': candidato['escola_nome'],
-                'Data_colocacao': datetime.now().isoformat(),
+                'Data_colocacao': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
                 'Estado': 'Pendente'
             }
 
