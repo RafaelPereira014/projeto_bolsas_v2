@@ -679,34 +679,34 @@ def update_status():
             
         
         
-        
-        user_info = user_infos(user_id)  # Get user info
-        escola_info = get_escola_info(last_row[3])  # Get escola info using the correct column for the school name/code
-        bolsa_id = get_bolsa_id_for_school(last_row[3])  # Get bolsa_id
+        if new_status == 'aceite':
+            user_info = user_infos(user_id)  # Get user info
+            escola_info = get_escola_info(last_row[3])  # Get escola info using the correct column for the school name/code
+            bolsa_id = get_bolsa_id_for_school(last_row[3])  # Get bolsa_id
 
-        # Prepare data to send to API
-        data_to_send = {
-            'NIF': user_info.get("NIF", None),
-            'Bolsa_id': bolsa_id,
-            'COD_EST': escola_info.get("COD_EST", None),
-            'Data_colocacao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Current date and time in the correct format
-            'Estado': 'Aceite'  # The state to be sent
-        }
+            # Prepare data to send to API
+            data_to_send = {
+                'NIF': user_info.get("NIF", None),
+                'Bolsa_id': bolsa_id,
+                'COD_EST': escola_info.get("COD_EST", None),
+                'Data_colocacao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Current date and time in the correct format
+                'Estado': 'Aceite'  # The state to be sent
+            }
 
-        # Print the data before sending it
-        #print("Data to send to /update_state:", data_to_send)
+            # Print the data before sending it
+            #print("Data to send to /update_state:", data_to_send)
 
-        api_url = 'http://127.0.0.1:8081/colocados'  
-        #api_url = 'https://api.edu.azores.gov.pt/colocados'  
+            #api_url = 'http://127.0.0.1:8081/colocados'  
+            api_url = 'https://api.edu.azores.gov.pt/colocados'  
 
-        try:
-            response = requests.post(api_url, json=data_to_send)
-            if response.status_code == 200:
-                print("Data successfully sent to /update_state")
-            else:
-                print(f"Error sending data: {response.status_code}")
-        except requests.exceptions.RequestException as e:
-            print(f"Error: {e}")
+            try:
+                response = requests.post(api_url, json=data_to_send)
+                if response.status_code == 200:
+                    print("Data successfully sent to /update_state")
+                else:
+                    print(f"Error sending data: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Error: {e}")
         
         
 
