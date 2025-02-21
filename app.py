@@ -572,6 +572,7 @@ def submit_selection():
                 INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
                 VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
             """
+            print("NAO ENTRO AQUI PORQUE")
             
             
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
