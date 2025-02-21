@@ -570,9 +570,18 @@ def submit_selection():
             """
             
                 
+            print("Executing Update Query:")
+            print(f"Query: {update_query}")
+            print(f"Parameters: {distrib}, {candidato['candidato_id']}")
+
             execute_update(update_query, (distrib, candidato['candidato_id']))
+
+            print("Executing Insert Query:")
+            print(f"Query: {insert_query2}")
+            print(f"Parameters: {candidato['candidato_id']}, {bolsa_id}, {candidato['escola_nome']}, {contrato_tipo}, {candidato['escola_priority_id']}")
+
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
-            
+                        
             user_info = user_infos(candidato['candidato_id'])
             data_to_send = {
                 'NIF': user_info.get("NIF", None),
