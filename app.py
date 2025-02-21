@@ -507,7 +507,7 @@ def submit_selection():
     for bolsa_id in bolsas_ids:
         query = """
             SELECT u.id AS candidato_id, u.nome, u.nota_final, u.deficiencia, ue.escola_priority_id, ue.escola_id, e.nome AS escola_nome
-            FROM Users u
+            FROM users u
             JOIN userbolsas ub ON u.id = ub.user_id
             JOIN user_escola ue ON u.id = ue.user_id
             JOIN Escola e ON ue.escola_id = e.id

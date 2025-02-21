@@ -20,7 +20,7 @@ def get_user_info(user_ids):
             u.nota_final, 
             c.tipo AS tipo_contrato, 
             u.estado
-        FROM Users u
+        FROM users u
         JOIN userbolsas ub ON u.id = ub.user_id
         LEFT JOIN contrato c ON ub.contrato_id = c.id
         WHERE u.id IN ({placeholders}) 
@@ -58,7 +58,7 @@ def user_infos(user_id):
                u.avaliacao_curricular, u.prova_de_conhecimentos, u.nota_final, 
                u.estado, u.observacoes, u.distribuicao, u.NIF, u.local_prova,
                d.file_name, d.upload_date
-        FROM Users u
+        FROM users u
         LEFT JOIN documents d ON u.id = d.user_id  -- Use LEFT JOIN to include users with no documents
         WHERE u.id = %s
         """
