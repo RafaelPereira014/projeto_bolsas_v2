@@ -2,7 +2,8 @@ import os
 import io
 import requests
 import pymysql
-from flask import abort, logging, request, redirect, url_for, flash
+import logging
+from flask import abort, request, redirect, url_for, flash
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
 from flask import request, send_file
 from flask import render_template, request, send_file
