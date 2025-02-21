@@ -624,9 +624,6 @@ def metadatapage():
     
     scores = get_all_user_scores()  # Fetch paginated results
     total_count = get_total_user_count()  # Count total results
-
-    
-
     return render_template('consulta.html', scores=scores,  total_count=total_count)
 
 @app.route('/view_escolas/<int:user_id>/<int:bolsa_id>')
