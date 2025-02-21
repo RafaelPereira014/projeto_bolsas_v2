@@ -217,3 +217,4 @@ def update_additional_info(user_id, additional_info):
     connection.commit()
     cursor.close()
     connection.close()
+    

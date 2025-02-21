@@ -6,6 +6,7 @@ from flask import request, send_file
 from flask import render_template, request, send_file
 import io
 import csv
+import requests
 from openpyxl import Workbook
 import pymysql
 from werkzeug.security import generate_password_hash
@@ -443,8 +444,7 @@ def submit_selection():
     vagas_per_escola = {}
     
 
-    # Process each escola_data to capture vagas_normais and vagas_deficiencia
-    # Process each escola_data to capture vagas_normais, vagas_deficiencia, and distribuiçao
+    
     for escola_data in escolas_data:
         # Assuming escola_data is formatted as 'escola_nome:vagas_normais:vagas_deficiencia:bolsa_id:distribuicao'
         escola_nome, vagas_normais, vagas_deficiencia, bolsa_id, distribuicao = escola_data.split(':')
@@ -554,6 +554,7 @@ def submit_selection():
     for escola_nome, candidatos in candidates_by_school.items():
         distrib = vagas_per_escola[escola_nome]['distribuicao']
         for candidato in candidatos:
+            
             update_query = """
             UPDATE Users
             SET estado = 'a aguardar resposta', distribuicao = %s
@@ -563,12 +564,33 @@ def submit_selection():
                 INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
                 VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
             """
+            
+                
             execute_update(update_query, (distrib, candidato['candidato_id']))
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
+            
+            user_info = user_infos(candidato['candidato_id'])
+            data_to_send = {
+                'NIF': user_info.get("NIF", None),
+                'Bolsa_id': bolsa_id,
+                'Escola_nome': candidato['escola_nome'],
+                'Data_colocacao': datetime.now().isoformat(),
+                'Estado': 'Pendente'
+            }
+
+            api_url = 'https://api.edu.azores.gov.pt/colocados'  
+            try:
+                response = requests.post(api_url, json=data_to_send)
+                if response.status_code == 200:
+                    print("Data successfully sent to /colocados")
+                else:
+                    print(f"Error sending data: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Error: {e}")
 
     return render_template('resultados.html', 
                            candidates_by_school=candidates_by_school, 
-                           vagas_per_escola=vagas_per_escola, 
+                           vagas_per_escola=vagas_per_escola,  
                            initial_vagas_per_escola=initial_vagas_per_escola,
                            date_today=date_today, 
                            contrato_tipo=contrato_tipo, 
@@ -1647,30 +1669,30 @@ def add_user():
     # Render the form template on GET request
     return render_template('add_user.html', bolsas=bolsas, escolas_per_bolsa=escolas_per_bolsa)
 
-# Route to receive and store data
-@app.route('/receive_data', methods=['POST'])
-def receive_data():
-    data = request.get_json()
+# # Route to receive and store data
+# @app.route('/receive_data', methods=['POST'])
+# def receive_data():
+#     data = request.get_json()
     
-    if data:
-        connection = create_connection()
-        cursor = connection.cursor()
+#     if data:
+#         connection = create_connection()
+#         cursor = connection.cursor()
 
-        insert_query = """
-        INSERT INTO received_data (data) VALUES (%s)
-        """
+#         insert_query = """
+#         INSERT INTO received_data (data) VALUES (%s)
+#         """
         
-        try:
-            cursor.execute(insert_query, (str(data),))
-            connection.commit()
-            return jsonify({"message": "Data received and stored successfully"}), 201
-        except Error as e:
-            print(f"Error occurred: {e}")
-            return jsonify({"error": "Failed to store data"}), 500
-        finally:
-            cursor.close()
-            connection.close()
-    return jsonify({"error": "No data received"}), 400
+#         try:
+#             cursor.execute(insert_query, (str(data),))
+#             connection.commit()
+#             return jsonify({"message": "Data received and stored successfully"}), 201
+#         except Error as e:
+#             print(f"Error occurred: {e}")
+#             return jsonify({"error": "Failed to store data"}), 500
+#         finally:
+#             cursor.close()
+#             connection.close()
+#     return jsonify({"error": "No data received"}), 400
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
