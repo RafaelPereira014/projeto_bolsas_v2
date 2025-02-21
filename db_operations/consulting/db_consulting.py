@@ -33,17 +33,16 @@ def execute_update(query, params):
         connection.close()
 
 def execute_insert(query, params):
-    connection = connect_to_database()
-    cursor = connection.cursor()
     try:
+        conn = connect_to_database()  # Ensure the connection is correct
+        cursor = conn.cursor()
         cursor.execute(query, params)
-        connection.commit()  
-    except pymysql.Error as err:
-        print(f"Error: {err}")
-        connection.rollback()
+        conn.commit()
+    except Exception as e:
+        print(f"Error executing insert: {e}")
     finally:
         cursor.close()
-        connection.close()
+        conn.close()
         
 def get_all_user_scores():
     connection = connect_to_database()
