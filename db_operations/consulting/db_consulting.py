@@ -37,7 +37,7 @@ def execute_insert(query, params):
     cursor = connection.cursor()
     try:
         cursor.execute(query, params)
-        connection.commit()  # Commit changes for update/insert queries
+        connection.commit()  
     except pymysql.Error as err:
         print(f"Error: {err}")
         connection.rollback()
