@@ -583,6 +583,7 @@ def submit_selection():
                 'Estado': 'A aguardar resposta'
             }
 
+            #api_url = 'http://127.0.0.1:8081/colocados'  
             api_url = 'https://api.edu.azores.gov.pt/colocados'  
             try:
                 response = requests.post(api_url, json=data_to_send)
@@ -699,7 +700,8 @@ def update_status():
             'Estado': new_status
         }
 
-        api_url = 'https://api.edu.azores.gov.pt/update_state'  
+        #api_url = 'http://127.0.0.1:8081/update_state'
+        api_url = 'https://api.edu.azores.gov.pt/update_state'
         try:
             response = requests.post(api_url, json=data_to_send)
             if response.status_code == 200:
