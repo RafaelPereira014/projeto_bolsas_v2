@@ -679,10 +679,9 @@ def update_status():
             
         
         
-        if new_status == 'aceite':
+        if new_status.lower() == 'aceite':
             user_info = user_infos(user_id)  # Get user info
             escola_info = get_escola_info(last_row[3])  # Get escola info using the correct column for the school name/code
-            print(escola_info)
             bolsa_id = get_bolsa_id_for_school(last_row[3])  # Get bolsa_id
            
             # Prepare data to send to API
