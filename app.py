@@ -393,7 +393,7 @@ def limpar_estados():
     try:
         with connection.cursor() as cursor:
             # Update all rows in Users to set estado to 'livre'
-            update_query = "UPDATE Users SET estado = 'livre'"
+            update_query = "UPDATE users SET estado = 'livre'"
             cursor.execute(update_query)
             
             # Delete all rows from colocados
