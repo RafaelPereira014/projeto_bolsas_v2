@@ -52,7 +52,7 @@ def get_all_user_scores():
     try:
         query = """
         SELECT u.id, u.nome, u.nota_final, u.estado, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids
-        FROM Users u
+        FROM users u
         LEFT JOIN userbolsas ub ON u.id = ub.user_id 
         GROUP BY u.id
         ORDER BY u.nota_final DESC
@@ -291,7 +291,7 @@ def total_users():
     connection = connect_to_database()
     cursor = connection.cursor()
     
-    cursor.execute("SELECT COUNT(*) FROM Users")
+    cursor.execute("SELECT COUNT(*) FROM users")
     results = cursor.fetchone()
     
     cursor.close()
@@ -305,7 +305,7 @@ def total_colocados():
     connection = connect_to_database()
     cursor = connection.cursor()
     
-    cursor.execute("SELECT COUNT(*) FROM Users where estado='aceite' ")
+    cursor.execute("SELECT COUNT(*) FROM users where estado='aceite' ")
     results = cursor.fetchone()
     
     cursor.close()
@@ -318,7 +318,7 @@ def get_total_user_count():
     connection = connect_to_database()
     if connection:
         cursor = connection.cursor()
-        cursor.execute("SELECT COUNT(*) FROM Users")
+        cursor.execute("SELECT COUNT(*) FROM users")
         results = cursor.fetchone()
         cursor.close()
         connection.close()
@@ -332,7 +332,7 @@ def get_all_user_scores():
     try:
         query = """
         SELECT u.id, u.nome, u.nota_final, u.estado, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids
-        FROM Users u
+        FROM users u
         LEFT JOIN userbolsas ub ON u.id = ub.user_id 
         GROUP BY u.id
         ORDER BY u.nota_final DESC
@@ -369,7 +369,7 @@ def get_filtered_user_scores():
         
         query = """
         SELECT u.id, u.nome, u.nota_final, GROUP_CONCAT(ub.Bolsa_id) AS bolsa_ids, u.estado
-        FROM Users u
+        FROM users u
         JOIN userbolsas ub ON u.id = ub.user_id
        
         GROUP BY u.id
@@ -388,7 +388,7 @@ def get_filtered_user_count(search_query):
     if connection:
         cursor = connection.cursor()
         search_query = f"%{search_query}%"
-        query = "SELECT COUNT(*) FROM Users WHERE nome LIKE %s"
+        query = "SELECT COUNT(*) FROM users WHERE nome LIKE %s"
         cursor.execute(query, (search_query,))
         results = cursor.fetchone()
         cursor.close()
@@ -424,7 +424,7 @@ def process_csv_and_update_db(csv_file_path):
                 nota = row["Nota_Final"]
 
                 # Check if the Nif exists in the database
-                cursor.execute("SELECT * FROM Users WHERE NIF = %s", (nif,))
+                cursor.execute("SELECT * FROM users WHERE NIF = %s", (nif,))
                 user = cursor.fetchone()
 
                 if user:  # If the Nif is found
