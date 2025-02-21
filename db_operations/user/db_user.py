@@ -7,7 +7,7 @@ def connect_to_database():
 
 def get_user_info(user_ids):
     connection = connect_to_database()
-    cursor = connection.cursor()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
 
     try:
         placeholders = ', '.join(['%s'] * len(user_ids))
