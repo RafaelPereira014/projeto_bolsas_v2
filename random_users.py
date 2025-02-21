@@ -16,9 +16,12 @@ def get_schools_for_bolsa(bolsa_id):
     schools = [row[0] for row in cursor.fetchall()]
     cursor.close()
     connection.close()
+    
+    
+    
     return schools
 
-def add_random_users(num_users=25):
+def add_random_users(num_users):
     num_bolsas = 9
     num_contratos = 3
 
@@ -34,7 +37,7 @@ def add_random_users(num_users=25):
         NIF = random.randint(100000000, 999999999)  # Generate a 9-digit NIF
         local_prova = random.choice(['Ilha Terceira', 'Ilha de S.Miguel', 'Ilha do Faial', 'Ilha das Flores', 'Ilha do Corvo', 'Ilha do Pico','Ilha da Graciosa','Ilha de S.Jorge','Ilha de Santa Maria'])
 
-        bolsa_ids = random.sample(range(1, num_bolsas + 1), k=random.randint(1, num_bolsas))
+        bolsa_ids = random.sample(range(42, 50), k=random.randint(1, min(9, 8)))  # Ensures k is at most 8
         contrato_id = random.randint(1, num_contratos)
 
         escolas_per_bolsa = []
