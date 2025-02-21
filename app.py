@@ -583,7 +583,7 @@ def submit_selection():
                 'Estado': 'A aguardar resposta'
             }
 
-            api_url = 'http://127.0.0.1:8081/colocados'  
+            api_url = 'https://api.edu.azores.gov.pt/colocados'  
             try:
                 response = requests.post(api_url, json=data_to_send)
                 if response.status_code == 200:
