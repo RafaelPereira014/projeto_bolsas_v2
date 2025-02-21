@@ -68,7 +68,7 @@ def add_random_users(num_users=25):
         try:
             # Insert into Users table
             user_query = """
-            INSERT INTO Users (nome, contacto, deficiencia, avaliacao_curricular, 
+            INSERT INTO users (nome, contacto, deficiencia, avaliacao_curricular, 
                                prova_de_conhecimentos, nota_final, estado, observacoes,
                                NIF, local_prova)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
