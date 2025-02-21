@@ -564,8 +564,10 @@ def submit_selection():
             SET estado = 'a aguardar resposta', distribuicao = %s
             WHERE id = %s
             """
+            print("entrei aqui facilmente")
             execute_update(update_query, (distrib, candidato['candidato_id']))
             
+            print("NAO ENTRO AQUI PORQUE")
             insert_query2 = """
                 INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
                 VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
