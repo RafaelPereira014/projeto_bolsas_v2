@@ -561,7 +561,7 @@ def submit_selection():
         for candidato in candidatos:
             
             update_query = """
-            UPDATE Users
+            UPDATE users
             SET estado = 'a aguardar resposta', distribuicao = %s
             WHERE id = %s
             """
@@ -661,7 +661,7 @@ def update_status():
 
     try:
         # Update the user's status in the Users table
-        update_query = "UPDATE Users SET estado = %s WHERE id = %s"
+        update_query = "UPDATE users SET estado = %s WHERE id = %s"
         cursor.execute(update_query, (new_status, user_id))
         conn.commit()
 
@@ -693,9 +693,30 @@ def update_status():
             ))
             conn.commit()
         
+        user_info = user_infos(user_id)
+        data_to_send = {
+            'NIF': user_info.get("NIF", None),
+            'Estado': new_status
+        }
+
+        api_url = 'https://api.edu.azores.gov.pt/update_state'  
+        try:
+            response = requests.post(api_url, json=data_to_send)
+            if response.status_code == 200:
+                print("Data successfully sent to /update_state")
+            else:
+                print(f"Error sending data: {response.status_code}")
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+
+        
         
 
         return jsonify({'success': True})
+
+        
+    
+
 
     except Exception as e:
         print(f"Error: {e}")
@@ -1612,7 +1633,7 @@ def add_user():
 
             # Insert into Users table
             user_query = """
-            INSERT INTO Users (nome, contacto, deficiencia, avaliacao_curricular, 
+            INSERT INTO users (nome, contacto, deficiencia, avaliacao_curricular, 
                                prova_de_conhecimentos, nota_final, estado, observacoes)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
