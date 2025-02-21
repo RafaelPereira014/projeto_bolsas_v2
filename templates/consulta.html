@@ -183,15 +183,15 @@
                         <tr data-estado="{{ score.estado }}">
                             <td><a href="{{ url_for('user_profile', user_id=score.id) }}">{{ score.nome }}</a></td>
                             <td>{{ score.nota_final }}</td>
-                            <td>{{ '✔️' if 1 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 2 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 3 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 4 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 5 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 6 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 7 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 8 in score.bolsa_ids else '❌' }}</td>
-                            <td>{{ '✔️' if 9 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 42 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 43 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 41 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 47 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 46 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 45 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 44 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 48 in score.bolsa_ids else '❌' }}</td>
+                            <td>{{ '✔️' if 49 in score.bolsa_ids else '❌' }}</td>
                             <!-- Add other bolsa columns as before -->
                             <td>
                             {% if score.estado == "livre" %}

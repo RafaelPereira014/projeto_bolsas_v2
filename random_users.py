@@ -16,12 +16,9 @@ def get_schools_for_bolsa(bolsa_id):
     schools = [row[0] for row in cursor.fetchall()]
     cursor.close()
     connection.close()
-    
-    
-    
     return schools
 
-def add_random_users(num_users):
+def add_random_users(num_users=25):
     num_bolsas = 9
     num_contratos = 3
 

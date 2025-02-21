@@ -706,7 +706,7 @@ def update_status():
 
 @app.route('/Bolsas/SaoMiguel')
 def bolsa_sao_miguel():
-    bolsa_id = 1
+    bolsa_id = 42
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -803,7 +803,7 @@ def bolsa_sao_miguel():
 
 @app.route('/Bolsas/Terceira', methods=['GET', 'POST'])
 def bolsa_terceira():
-    bolsa_id = 2
+    bolsa_id = 43
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -902,7 +902,7 @@ def bolsa_terceira():
 
 @app.route('/Bolsas/SantaMaria')
 def bolsa_santa_maria():
-    bolsa_id = 3
+    bolsa_id = 41
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -999,7 +999,7 @@ def bolsa_santa_maria():
 
 @app.route('/Bolsas/Faial')
 def bolsa_faial():
-    bolsa_id = 4
+    bolsa_id = 47
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -1096,7 +1096,7 @@ def bolsa_faial():
 
 @app.route('/Bolsas/Pico')
 def bolsa_pico():
-    bolsa_id = 5
+    bolsa_id = 46
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -1193,7 +1193,7 @@ def bolsa_pico():
 
 @app.route('/Bolsas/SaoJorge')
 def bolsa_sao_jorge():
-    bolsa_id = 6
+    bolsa_id = 45
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -1290,7 +1290,7 @@ def bolsa_sao_jorge():
 
 @app.route('/Bolsas/Graciosa')
 def bolsa_graciosa():
-    bolsa_id = 7
+    bolsa_id = 44
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -1386,7 +1386,7 @@ def bolsa_graciosa():
 
 @app.route('/Bolsas/Flores')
 def bolsa_flores():
-    bolsa_id = 8
+    bolsa_id = 48
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 
@@ -1483,7 +1483,7 @@ def bolsa_flores():
 
 @app.route('/Bolsas/Corvo')
 def bolsa_corvo():
-    bolsa_id = 9
+    bolsa_id = 49
     page = request.args.get('page', 1, type=int)  # Get the page number, default to 1
     per_page = 10  # Number of users per page
 

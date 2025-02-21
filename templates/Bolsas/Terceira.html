@@ -153,7 +153,7 @@
         modalTitle.textContent = `Escolas e Prioridades de ${userName}`;
     
         // Fetch escolas for the selected user
-        fetch(`/view_escolas/${userId}/2`) 
+        fetch(`/view_escolas/${userId}/43`) 
             .then(response => response.json())
             .then(data => {
                 if (data && data.length) {
