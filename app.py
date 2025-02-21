@@ -174,7 +174,13 @@ def minhaconta():
 
 @app.route('/user_profile/<int:user_id>', methods=['GET', 'POST'])
 def user_profile(user_id):
-    user_info = user_infos(user_id)  
+    user_info = user_infos(user_id)
+    
+    # Check if user_info is valid
+    if not user_info or 'id' not in user_info:
+        flash('User not found', 'error')
+        return redirect(url_for('metadatapage'))  # Redirect to a different route or homepage if user is not found
+    
     colocados = get_colocados_by_user_id(user_id)
 
     if request.method == 'POST':
