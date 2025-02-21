@@ -555,7 +555,6 @@ def submit_selection():
     save_candidates_to_file_and_db(candidates_by_school)
                
 
-    # Update user status and insert selected candidates into 'Colocados' table
     for escola_nome, candidatos in candidates_by_school.items():
         distrib = vagas_per_escola[escola_nome]['distribuicao']
         for candidato in candidatos:
@@ -570,9 +569,8 @@ def submit_selection():
                 VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
             """
             
-                
-            execute_update(update_query, (distrib, candidato['candidato_id']))
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
+            execute_update(update_query, (distrib, candidato['candidato_id']))
             
             user_info = user_infos(candidato['candidato_id'])
             data_to_send = {
