@@ -2,7 +2,7 @@ import os
 import io
 import requests
 import pymysql
-from flask import abort, request, redirect, url_for, flash
+from flask import abort, logging, request, redirect, url_for, flash
 from flask import Flask, flash, redirect, request, jsonify, render_template, send_from_directory, session, url_for
 from flask import request, send_file
 from flask import render_template, request, send_file
@@ -1721,4 +1721,5 @@ def add_user():
 #     return jsonify({"error": "No data received"}), 400
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)  # Logs everything to the console
     app.run(debug=True, host="0.0.0.0", port=8080)
