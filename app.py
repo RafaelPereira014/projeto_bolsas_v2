@@ -691,10 +691,10 @@ def update_status():
             # Prepare data to send to API
             data_to_send = {
                 'NIF': user_info.get("NIF", None),
-                'Bolsa_id': bolsa_id,
                 'COD_EST': escola_info.get("COD_EST", None),
                 'Data_colocacao': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),  # Current date and time in the correct format
-                'Estado': 'Aceite'  # The state to be sent
+                'Estado': 'Aceite',
+                'Oferta_num': user_info.get("oferta_num",None)
             }
 
             # Print the data before sending it
