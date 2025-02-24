@@ -569,12 +569,12 @@ def submit_selection():
             print("entrei aqui facilmente")
             execute_update(update_query, (distrib, candidato['candidato_id']))
             
-            print("NAO ENTRO AQUI PORQUE")
+            
             insert_query2 = """
                 INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado,oferta_num)
                 VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta',%s)
             """
-            print("NAO ENTRO AQUI PORQUE")
+            
             
             
             execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id'],curr_oferta))
