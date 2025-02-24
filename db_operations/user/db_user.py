@@ -56,7 +56,7 @@ def user_infos(user_id):
         query = """
         SELECT u.id AS candidato_id, u.nome, u.contacto, u.deficiencia, 
                u.avaliacao_curricular, u.prova_de_conhecimentos, u.nota_final, 
-               u.estado, u.observacoes, u.distribuicao, u.NIF, u.local_prova,
+               u.estado, u.observacoes, u.distribuicao, u.NIF, u.local_prova,u.oferta_num,
                d.file_name, d.upload_date
         FROM users u
         LEFT JOIN documents d ON u.id = d.user_id  -- Use LEFT JOIN to include users with no documents
@@ -80,7 +80,9 @@ def user_infos(user_id):
                 "distribuicao": result[0][9],
                 "NIF": result[0][10],
                 "local_prova": result[0][11],
-                "documentos": []  # Initialize an empty list for documents
+                "documentos": [],
+                "oferta_num": result[0][12]
+                
             }
 
             # Populate the documentos list with file names and upload dates

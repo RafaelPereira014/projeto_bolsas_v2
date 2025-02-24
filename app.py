@@ -448,6 +448,7 @@ def submit_selection():
     # Get the list of schools with vacancies
     escolas_data = request.form.getlist('escolas[]')
     vagas_per_escola = {}
+    curr_oferta = '56/2025'
     
 
     
@@ -570,13 +571,13 @@ def submit_selection():
             
             print("NAO ENTRO AQUI PORQUE")
             insert_query2 = """
-                INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado)
-                VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta')
+                INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date,estado,oferta_num)
+                VALUES (%s, %s, %s, %s, %s, NOW(),'a aguardar resposta',%s)
             """
             print("NAO ENTRO AQUI PORQUE")
             
             
-            execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id']))
+            execute_insert(insert_query2, (candidato['candidato_id'], bolsa_id, candidato['escola_nome'], contrato_tipo, candidato['escola_priority_id'],curr_oferta))
             
                   
         
@@ -656,7 +657,7 @@ def update_status():
         # Fetch the last row for this user from colocados
         fetch_query = """
         SELECT 
-            id, user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado
+            id, user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado,oferta_num
         FROM colocados
         WHERE user_id = %s
         ORDER BY placement_date DESC LIMIT 1
@@ -667,8 +668,8 @@ def update_status():
         if last_row:
             # Insert a new row in colocados with the same data but updated estado
             insert_query = """
-            INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado,alterado_por)
-            VALUES (%s, %s, %s, %s, %s, NOW(), %s,%s)
+            INSERT INTO colocados (user_id, bolsa_id, escola_nome, contrato_id, escola_priority_id, placement_date, estado,alterado_por,oferta_num)
+            VALUES (%s, %s, %s, %s, %s, NOW(), %s,%s,%s)
             """
             cursor.execute(insert_query, (
                 last_row[1],  # user_id
@@ -677,7 +678,8 @@ def update_status():
                 last_row[4],  # contrato_id
                 last_row[5],  # escola_priority_id
                 new_status,
-                user_logged
+                user_logged,
+                last_row[8]
             ))
             conn.commit()
             
@@ -696,8 +698,9 @@ def update_status():
                 'Estado': 'Aceite',
                 'Oferta_num': user_info.get("oferta_num",None)
             }
-
             
+            print(data_to_send)
+
             #api_url = 'http://127.0.0.1:8081/colocados'  
             api_url = 'https://api.edu.azores.gov.pt/colocados'  
 
