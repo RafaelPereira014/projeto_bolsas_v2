@@ -701,8 +701,8 @@ def update_status():
             
             print(data_to_send)
 
-            api_url = 'http://127.0.0.1:8081/colocados'  
-            #api_url = 'https://api.edu.azores.gov.pt/colocados'  
+            #api_url = 'http://127.0.0.1:8081/colocados'  
+            api_url = 'https://api.edu.azores.gov.pt/colocados'  
 
             try:
                 response = requests.post(api_url, json=data_to_send)
