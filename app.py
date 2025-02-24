@@ -688,7 +688,7 @@ def update_status():
         if new_status.lower() == 'aceite':
             user_info = user_infos(user_id)  # Get user info
             escola_info = get_escola_info(last_row[3])  # Get escola info using the correct column for the school name/code
-            bolsa_id = get_bolsa_id_for_school(last_row[3])  # Get bolsa_id
+            
            
             # Prepare data to send to API
             data_to_send = {
@@ -701,8 +701,8 @@ def update_status():
             
             print(data_to_send)
 
-            #api_url = 'http://127.0.0.1:8081/colocados'  
-            api_url = 'https://api.edu.azores.gov.pt/colocados'  
+            api_url = 'http://127.0.0.1:8081/colocados'  
+            #api_url = 'https://api.edu.azores.gov.pt/colocados'  
 
             try:
                 response = requests.post(api_url, json=data_to_send)
