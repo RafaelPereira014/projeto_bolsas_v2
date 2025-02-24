@@ -697,9 +697,7 @@ def update_status():
                 'Oferta_num': user_info.get("oferta_num",None)
             }
 
-            # Print the data before sending it
-            #print("Data to send to /update_state:", data_to_send)
-
+            
             #api_url = 'http://127.0.0.1:8081/colocados'  
             api_url = 'https://api.edu.azores.gov.pt/colocados'  
 
