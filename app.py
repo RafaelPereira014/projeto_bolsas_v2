@@ -327,6 +327,7 @@ def mainpage():
     all_schools = get_all_escola_names()
     colocados = get_colocados()
     vagas = get_vagas_per_bolsa()
+    curr_oferta = get_curr_oferta()
 
     for vaga in vagas:
         vaga['total_vagas'] = int(vaga['total_vagas'] or 0)  
@@ -355,7 +356,8 @@ def mainpage():
         colocados_per_escola=colocados_per_escola,
         total_aceite=total_aceite,
         total_negado=total_negado,
-        vagas=vagas  # Pass fixed data
+        vagas=vagas,
+        curr_oferta=curr_oferta
     )
 @app.route('/import_users_data')
 def import_users():
@@ -448,7 +450,7 @@ def submit_selection():
     # Get the list of schools with vacancies
     escolas_data = request.form.getlist('escolas[]')
     vagas_per_escola = {}
-    curr_oferta = '56/2025'
+    curr_oferta = get_curr_oferta()
     
 
     
@@ -588,7 +590,8 @@ def submit_selection():
                            initial_vagas_per_escola=initial_vagas_per_escola,
                            date_today=date_today, 
                            contrato_tipo=contrato_tipo, 
-                           total_vagas=total_vagas)
+                           total_vagas=total_vagas,
+                            curr_oferta= curr_oferta)
 
 @app.route('/send-email', methods=['POST'])
 def send_email_route():
@@ -618,7 +621,8 @@ def metadatapage():
     
     scores = get_all_user_scores()  # Fetch paginated results
     total_count = get_total_user_count()  # Count total results
-    return render_template('consulta.html', scores=scores,  total_count=total_count)
+    curr_oferta= get_curr_oferta()
+    return render_template('consulta.html', scores=scores,  total_count=total_count,curr_oferta=curr_oferta)
 
 @app.route('/view_escolas/<int:user_id>/<int:bolsa_id>')
 def fetch_escolas(user_id, bolsa_id):

@@ -499,3 +499,36 @@ def get_all_escola_names():
         # Close cursor and connection
         cursor.close()
         connection.close()
+        
+def get_curr_oferta():
+    """
+    Fetch oferta_num values where data_fim is in the next year.
+    """
+    # Create a database connection
+    connection = connect_to_database()  # Ensure this function is defined and works correctly
+    cursor = connection.cursor()
+
+    try:
+        # Query to get oferta_num values with data_fim in the next year
+        query = """
+            SELECT oferta_num
+            FROM oferta
+            WHERE YEAR(data_fim) = YEAR(CURDATE()) + 1
+        """
+        cursor.execute(query)  # Execute the query
+        results = cursor.fetchall()
+
+        # If there's at least one result, return the first one, formatted as a string
+        if results:
+            return results[0][0]  # Returning the first oferta_num (as a string, e.g., '56/2025')
+
+        return None  # If no results, return None or handle appropriately
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return None  # Return None on error
+
+    finally:
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
