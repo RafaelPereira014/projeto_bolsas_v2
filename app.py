@@ -734,6 +734,36 @@ def update_status():
         conn.close()
 
 
+@app.route('/receive-data', methods=['GET'])
+def receive_data():
+    base_url = 'https://outsysdev.azores.gov.pt/BEPA_Services_BL/rest/BolsaIlhas/CandidatoBolsaIlhas'
+    username = 'REST_BolsaIlha'
+    password = 'fDM52d1:-wT!'
+    
+    
+    params = {
+        "UserName": username,
+        "Password": password
+    }
+
+    try:
+        
+        response = requests.get(base_url, params=params)
+
+        
+        if response.status_code == 200:
+            return jsonify(response.json()), 200
+        else:
+            return jsonify({"error": "Failed to access API", "status_code": response.status_code, "message": response.text}), response.status_code
+
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": "An error occurred while accessing the API", "details": str(e)}), 500
+
+        
+
+
+###########------------Bolsas---------------_###################
+
 @app.route('/Bolsas/SaoMiguel')
 def bolsa_sao_miguel():
     bolsa_id = 42
