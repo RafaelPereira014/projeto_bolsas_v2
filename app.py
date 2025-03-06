@@ -17,6 +17,7 @@ from db_operations.selection.db_selection import *
 from db_operations.consulting.db_consulting import *
 from db_operations.user.db_user import *
 from db_operations.admin.admin import *
+from db_operations.admin.api_info import *
 
 
 app = Flask(__name__)
@@ -736,28 +737,18 @@ def update_status():
 
 @app.route('/receive-data', methods=['GET'])
 def receive_data():
-    base_url = 'https://outsysdev.azores.gov.pt/BEPA_Services_BL/rest/BolsaIlhas/CandidatoBolsaIlhas'
-    username = 'REST_BolsaIlha'
-    password = 'fDM52d1:-wT!'
-    
-    
-    params = {
-        "UserName": username,
-        "Password": password
-    }
-
     try:
         
-        response = requests.get(base_url, params=params)
-
+        json_data = request.get_json()
+        if not json_data:
+            return jsonify({"error": "Invalid JSON data"}), 400
         
-        if response.status_code == 200:
-            return jsonify(response.json()), 200
-        else:
-            return jsonify({"error": "Failed to access API", "status_code": response.status_code, "message": response.text}), response.status_code
-
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": "An error occurred while accessing the API", "details": str(e)}), 500
+        # Insert the data into the database
+        insert_data_to_db(json_data, db_config)
+        return jsonify({"message": "Data successfully inserted"}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
         
 
