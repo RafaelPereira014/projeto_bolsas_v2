@@ -11,7 +11,7 @@ from datetime import date
 from openpyxl import Workbook
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-from config import db_config
+from config import AUTH_URL, DATA_URL_TEMPLATE, CLIENT_ID, CLIENT_SECRET, db_config
 from db_operations.notifications import send_email_on_selection
 from db_operations.selection.db_selection import *
 from db_operations.consulting.db_consulting import *
@@ -627,7 +627,6 @@ def metadatapage():
 
 @app.route('/view_escolas/<int:user_id>/<int:bolsa_id>')
 def fetch_escolas(user_id, bolsa_id):
-    # print("User ID:", user_id)
     escolas = get_escolas_by_bolsa(user_id, bolsa_id)
     # print("Fetched escolas:", escolas)  # This should show the fetched results
     return jsonify(escolas)  # Return JSON response
@@ -735,18 +734,45 @@ def update_status():
         conn.close()
 
 
-@app.route('/receive-data', methods=['GET'])
+@app.route('/receive-data', methods=['POST','GET'])
 def receive_data():
     try:
+        auth_payload = {
+            "client_id": CLIENT_ID,
+            "client_secret": CLIENT_SECRET
+        }
+        auth_headers = {
+            "Content-Type": "application/json"
+        }
+        auth_response = requests.post(AUTH_URL, json=auth_payload, headers=auth_headers)
         
-        json_data = request.get_json()
+        if auth_response.status_code != 200:
+            return jsonify({
+                "error": "Authentication failed",
+                "details": auth_response.text
+            }), auth_response.status_code
+
+        auth_data = auth_response.json()
+        access_token = auth_data.get("Access_Token")
+        if not access_token:
+            return jsonify({"error": "Access token not found in the authentication response"}), 400
+
+        data_url = DATA_URL_TEMPLATE.format(access_token)
+        data_response = requests.get(data_url)
+
+        if data_response.status_code != 200:
+            return jsonify({
+                "error": "Failed to fetch data",
+                "details": data_response.text
+            }), data_response.status_code
+
+        json_data = data_response.json()
         if not json_data:
-            return jsonify({"error": "Invalid JSON data"}), 400
-        
-        # Insert the data into the database
+            return jsonify({"error": "No data received from the API"}), 400
+
         insert_data_to_db(json_data, db_config)
         return jsonify({"message": "Data successfully inserted"}), 200
-    
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
