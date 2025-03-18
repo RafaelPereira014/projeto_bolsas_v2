@@ -51,7 +51,7 @@ def get_escolas_by_bolsa(bolsa_id):
         query = """
         SELECT e.id, e.nome
         FROM Bolsa_Escola be
-        JOIN Escola e ON be.escola_id = e.id
+        JOIN escola e ON be.escola_id = e.id
         WHERE be.bolsa_id = %s
         """
         cursor.execute(query, (bolsa_id,))
@@ -131,7 +131,7 @@ def get_bolsa_id_for_school(escola_nome):
     """
     query = """
         SELECT be.bolsa_id
-        FROM Escola e
+        FROM escola e
         JOIN Bolsa_Escola be ON e.id = be.escola_id
         WHERE e.nome = %s
     """

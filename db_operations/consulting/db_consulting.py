@@ -123,7 +123,7 @@ def get_escolas_by_bolsa(user_id, bolsa_id):
         FROM user_escola ue
         JOIN Bolsa_Escola be ON ue.escola_id = be.escola_id
         JOIN userbolsas ub ON ue.user_id = ub.user_id  -- Join with userbolsas to get contrato_id
-        JOIN Escola e ON ue.escola_id = e.id  -- Join with escola to get school name
+        JOIN escola e ON ue.escola_id = e.id  -- Join with escola to get school name
         WHERE ue.user_id = %s AND be.bolsa_id = %s 
         """
 
@@ -169,7 +169,7 @@ def get_escolas_by_users(user_ids, bolsa_id):
                 JOIN userbolsas ub 
                     ON ue.user_id = ub.user_id  -- Join with userbolsas to get contrato_id
                     AND ub.bolsa_id = be.bolsa_id  -- Ensure contrato_id corresponds to the correct bolsa_id
-                JOIN Escola e 
+                JOIN escola e 
                     ON ue.escola_id = e.id  -- Join with Escola to get the school name
                 WHERE ue.user_id IN ({placeholders}) 
                 AND be.bolsa_id = %s
@@ -211,7 +211,7 @@ def get_escolas_user(user_id):
         query = """
         SELECT DISTINCT ue.user_id, ue.escola_id, ue.escola_priority_id, e.nome AS escola_nome
         FROM user_escola ue
-        JOIN Escola e ON ue.escola_id = e.id  
+        JOIN escola e ON ue.escola_id = e.id  
         WHERE ue.user_id = %s
         ORDER BY ue.escola_priority_id
         """
@@ -241,7 +241,7 @@ def get_escola_names_by_bolsa(bolsa_id):
         query = """
         SELECT e.nome AS escola_nome 
         FROM Bolsa_Escola be
-        JOIN Escola e ON be.escola_id = e.id  -- Join on escola_id
+        JOIN escola e ON be.escola_id = e.id  -- Join on escola_id
         WHERE be.bolsa_id = %s
         """
         cursor.execute(query, (bolsa_id,))  # Pass bolsa_id as a parameter
@@ -277,7 +277,7 @@ def total_escolas():
     connection = connect_to_database()
     cursor = connection.cursor()
     
-    cursor.execute("SELECT COUNT(*) from Escola ")
+    cursor.execute("SELECT COUNT(*) from escola ")
     results = cursor.fetchone()
     
     cursor.close()
@@ -483,7 +483,7 @@ def get_all_escola_names():
         # Query to get all escola names
         query = """
         SELECT nome AS escola_nome
-        FROM Escola
+        FROM escola
         """
         cursor.execute(query)  # No parameters needed
         results = cursor.fetchall()
