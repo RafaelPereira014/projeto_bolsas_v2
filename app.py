@@ -515,7 +515,7 @@ def submit_selection():
             FROM users u
             JOIN userbolsas ub ON u.id = ub.user_id
             JOIN user_escola ue ON u.id = ue.user_id
-            JOIN Escola e ON ue.escola_id = e.id
+            JOIN escola e ON ue.escola_id = e.id
             LEFT JOIN colocados c ON u.id = c.user_id
             WHERE ub.Bolsa_id = %s
             AND (
