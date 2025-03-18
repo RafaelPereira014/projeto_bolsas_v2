@@ -734,9 +734,10 @@ def update_status():
         conn.close()
 
 
-@app.route('/receive-data', methods=['POST','GET'])
-def receive_data():
+@app.route('/get_token', methods=['POST'])
+def get_token():
     try:
+        # Authenticate and return the access token
         auth_payload = {
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET
@@ -757,6 +758,23 @@ def receive_data():
         if not access_token:
             return jsonify({"error": "Access token not found in the authentication response"}), 400
 
+        return jsonify({"access_token": access_token}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/receive-data', methods=['POST'])
+def receive_data():
+    try:
+        # Get the access token from the request payload
+        request_data = request.get_json()
+        access_token = request_data.get("access_token")
+        
+        if not access_token:
+            return jsonify({"error": "Access token is required"}), 400
+
+        # Fetch data using the access token
         data_url = DATA_URL_TEMPLATE.format(access_token)
         data_response = requests.get(data_url)
 
@@ -770,12 +788,12 @@ def receive_data():
         if not json_data:
             return jsonify({"error": "No data received from the API"}), 400
 
+        # Insert the received data into the database
         insert_data_to_db(json_data, db_config)
         return jsonify({"message": "Data successfully inserted"}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
         
 
 
