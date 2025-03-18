@@ -429,7 +429,7 @@ def selection_page():
     cursor = connection.cursor()
 
     # Fetch the list of schools from the database
-    cursor.execute("SELECT id, nome FROM Escola")
+    cursor.execute("SELECT id, nome from escola")
     escolas = cursor.fetchall()
 
     # Fetch the list of bolsas from the database (if you have it)
@@ -737,7 +737,6 @@ def update_status():
 @app.route('/get_token', methods=['POST'])
 def get_token():
     try:
-        # Authenticate and return the access token
         auth_payload = {
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET
@@ -767,14 +766,12 @@ def get_token():
 @app.route('/receive-data', methods=['POST'])
 def receive_data():
     try:
-        # Get the access token from the request payload
         request_data = request.get_json()
         access_token = request_data.get("access_token")
         
         if not access_token:
             return jsonify({"error": "Access token is required"}), 400
 
-        # Fetch data using the access token
         data_url = DATA_URL_TEMPLATE.format(access_token)
         data_response = requests.get(data_url)
 
@@ -788,7 +785,6 @@ def receive_data():
         if not json_data:
             return jsonify({"error": "No data received from the API"}), 400
 
-        # Insert the received data into the database
         insert_data_to_db(json_data, db_config)
         return jsonify({"message": "Data successfully inserted"}), 200
 
@@ -1754,7 +1750,7 @@ def add_user():
         bolsa_id = bolsa[0]
         cursor.execute("""
             SELECT e.id, e.nome 
-            FROM Escola e
+            from escola e
             JOIN Bolsa_Escola be ON e.id = be.escola_id
             WHERE be.bolsa_id = %s
         """, (bolsa_id,))
