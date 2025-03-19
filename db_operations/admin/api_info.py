@@ -38,8 +38,10 @@ def insert_data_to_db(json_data, db_config):
             # Insert into the main table (assuming it's named `ofertas`)
             oferta_num = json_data['ofertaNum']
             oferta_ano = 2025
-            data_inicio = json_data['DataPublicacao']
-            data_fim = json_data['DataConclusao']
+            datainit=json_data['DataPublicacao']
+            data_inicio = datainit.split('T')[0]
+            dataend = json_data['DataConclusao']
+            data_fim = dataend.split('T')[0]
             
             oferta_query = """
                 INSERT INTO oferta (oferta_num, oferta_ano, data_inicio, data_fim)
