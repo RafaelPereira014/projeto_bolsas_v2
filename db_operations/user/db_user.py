@@ -5,12 +5,15 @@ def connect_to_database():
     """Establishes a connection to the MySQL database."""
     return pymysql.connect(**db_config)
 
-def get_user_info(user_ids):
+def get_user_info(bolsa_id, user_ids):
     connection = connect_to_database()
     cursor = connection.cursor()
 
     try:
+        # Create placeholders for the list of user_ids
         placeholders = ', '.join(['%s'] * len(user_ids))
+        
+        # Query to fetch user information where the user is linked to the correct bolsa_id
         query = f"""
         SELECT DISTINCT 
             u.id AS candidato_id, 
@@ -24,9 +27,11 @@ def get_user_info(user_ids):
         JOIN userbolsas ub ON u.id = ub.user_id
         LEFT JOIN contrato c ON ub.contrato_id = c.id
         WHERE u.id IN ({placeholders}) 
+        AND ub.Bolsa_id = %s  -- Ensure that the user is linked to the correct bolsa_id
         ORDER BY u.nota_final DESC
         """
-        cursor.execute(query, user_ids)
+        # Add bolsa_id as the last parameter in the query execution
+        cursor.execute(query, user_ids + [bolsa_id])
         results = cursor.fetchall()
 
         # Return results as a list of dictionaries, including tipo_contrato

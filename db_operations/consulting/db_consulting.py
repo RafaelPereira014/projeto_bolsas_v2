@@ -119,23 +119,37 @@ def get_escolas_by_bolsa(user_id, bolsa_id):
     try:
         # Prepare a query string for a single user_id
         query = """
-        SELECT DISTINCT ue.user_id, ue.escola_id, ue.escola_priority_id, ub.contrato_id, e.nome AS escola_nome
+        SELECT DISTINCT 
+            ue.user_id, 
+            ue.escola_id, 
+            ue.escola_priority_id, 
+            ub.contrato_id, 
+            e.nome AS escola_nome
         FROM user_escola ue
         JOIN Bolsa_Escola be ON ue.escola_id = be.escola_id
         JOIN userbolsas ub ON ue.user_id = ub.user_id  -- Join with userbolsas to get contrato_id
         JOIN escola e ON ue.escola_id = e.id  -- Join with escola to get school name
-        WHERE ue.user_id = %s AND be.bolsa_id = %s 
+        WHERE ue.user_id = %s 
+          AND be.bolsa_id = %s 
+          AND ub.Bolsa_id = be.bolsa_id  -- Ensure the bolsa_id matches
+          AND ub.contrato_id = ub.contrato_id  -- Ensure the contrato_id matches for the bolsa_id
         """
 
-        # # Print the query and parameters for debugging
-        # print("Executing query:", query)
-        # print("With parameters:", (user_id, bolsa_id))
-
-        cursor.execute(query, (user_id, bolsa_id))  # Pass user_id and bolsa_id as parameters
+        # Execute the query with user_id and bolsa_id as parameters
+        cursor.execute(query, (user_id, bolsa_id))
         results = cursor.fetchall()
 
         # Return results as a list of dictionaries
-        return [{"user_id": row[0], "escola_id": row[1], "escola_priority_id": row[2], "contrato_id": row[3], "escola_nome": row[4]} for row in results]
+        return [
+            {
+                "user_id": row[0], 
+                "escola_id": row[1], 
+                "escola_priority_id": row[2], 
+                "contrato_id": row[3], 
+                "escola_nome": row[4]
+            } 
+            for row in results
+        ]
 
     except Exception as e:
         print(f"Error: {e}")

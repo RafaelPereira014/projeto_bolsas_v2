@@ -628,6 +628,7 @@ def metadatapage():
 @app.route('/view_escolas/<int:user_id>/<int:bolsa_id>')
 def fetch_escolas(user_id, bolsa_id):
     escolas = get_escolas_by_bolsa(user_id, bolsa_id)
+    print(escolas)
     # print("Fetched escolas:", escolas)  # This should show the fetched results
     return jsonify(escolas)  # Return JSON response
 
@@ -803,12 +804,13 @@ def bolsa_sao_miguel():
 
     uploaded_documents = get_uploaded_documents(bolsa_id)  # Fetch uploaded documents for this bolsa_id
     user_ids = has_bolsa(bolsa_id)  # Get the list of user IDs for the bolsa
-
+    print(user_ids)
     if not user_ids:
         return render_template('/Bolsas/SaoMiguel.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(42,user_ids)
+    
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -905,8 +907,9 @@ def bolsa_terceira():
         return render_template('/Bolsas/Terceira.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(43,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
+    print(user_info_sorted)
 
     # Paginate the sorted user info
     total_users = len(user_info_sorted)
@@ -917,6 +920,7 @@ def bolsa_terceira():
     # Fetch escolas for the current page of users
     user_ids_paginated = [user['id'] for user in user_info]
     escolas_bolsa = get_escolas_by_users(user_ids_paginated, bolsa_id)
+    
 
     # Calculate total number of pages
     total_pages = (total_users + per_page - 1) // per_page
@@ -946,6 +950,7 @@ def bolsa_terceira():
             user_escolas = [
                 escola for escola in escolas_bolsa if escola['user_id'] == user['id']
             ]
+            
             
             # Generate a text summary of the schools
             escolas_text = ", ".join(
@@ -1004,7 +1009,7 @@ def bolsa_santa_maria():
         return render_template('/Bolsas/SantaMaria.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(41,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1101,7 +1106,7 @@ def bolsa_faial():
         return render_template('/Bolsas/Faial.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(47,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1198,7 +1203,7 @@ def bolsa_pico():
         return render_template('/Bolsas/Pico.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(46,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1295,7 +1300,7 @@ def bolsa_sao_jorge():
         return render_template('/Bolsas/SaoJorge.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(45,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1392,7 +1397,7 @@ def bolsa_graciosa():
         return render_template('/Bolsas/Graciosa.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(44,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1488,7 +1493,7 @@ def bolsa_flores():
         return render_template('/Bolsas/Flores.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(48,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1585,7 +1590,7 @@ def bolsa_corvo():
         return render_template('/Bolsas/Corvo.html', user_info=[], escolas_bolsa=[], pagination=None, uploaded_documents=uploaded_documents)
 
     # Fetch all user info and sort by final grade before pagination
-    user_info = get_user_info(user_ids)
+    user_info = get_user_info(49,user_ids)
     user_info_sorted = sorted(user_info, key=lambda x: x['nota_final'], reverse=True)
 
     # Paginate the sorted user info
@@ -1625,6 +1630,7 @@ def bolsa_corvo():
             user_escolas = [
                 escola for escola in escolas_bolsa if escola['user_id'] == user['id']
             ]
+            print(user_escolas)
             
             # Generate a text summary of the schools
             escolas_text = ", ".join(

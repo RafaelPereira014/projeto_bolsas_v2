@@ -75,10 +75,8 @@ def insert_data_to_db(json_data, db_config):
                 
                 for preferencia in candidato['preferenciasPorCandidato']:
                     ilha_id = preferencia['ilhaId']
-                    ilha_nome = preferencia['ilhaNome']
                     tipo_de_vinculo = preferencia['tipoDeVinculo']
                     id_vinculo = get_id_contrato(tipo_de_vinculo)
-                    nome_escola = preferencia['nomeEscola']
                     codigo_de_escola = preferencia['codigoDeEscola']
                     id_escola = get_escola_id(codigo_de_escola)
                     ordem_de_preferencia = preferencia['ordemDePreferencia']
