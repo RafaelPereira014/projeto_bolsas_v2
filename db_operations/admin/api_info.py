@@ -48,7 +48,6 @@ def insert_data_to_db(json_data, db_config):
                 VALUES (%s, %s, %s, %s)
             """
             cursor.execute(oferta_query, (oferta_num, oferta_ano, data_inicio, data_fim))
-            print(json_data['candidatos'])
             for candidato in json_data['candidatos']:
                 candidato_nome = candidato['candidatoNome']
                 candidato_nif = candidato['candidatoNIF']
@@ -79,7 +78,9 @@ def insert_data_to_db(json_data, db_config):
                     id_vinculo = get_id_contrato(tipo_de_vinculo)
                     nome_escola = preferencia['nomeEscola']
                     codigo_de_escola = preferencia['codigoDeEscola']
+                    print(codigo_de_escola)
                     id_escola = get_escola_id(codigo_de_escola)
+                    print(id_escola)
                     ordem_de_preferencia = preferencia['ordemDePreferencia']
                     
                     bolsa_query = """
