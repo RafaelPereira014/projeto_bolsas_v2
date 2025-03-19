@@ -48,7 +48,7 @@ def insert_data_to_db(json_data, db_config):
                 VALUES (%s, %s, %s, %s)
             """
             cursor.execute(oferta_query, (oferta_num, oferta_ano, data_inicio, data_fim))
-            
+            print(json_data['candidatos'])
             for candidato in json_data['candidatos']:
                 candidato_nome = candidato['candidatoNome']
                 candidato_nif = candidato['candidatoNIF']
