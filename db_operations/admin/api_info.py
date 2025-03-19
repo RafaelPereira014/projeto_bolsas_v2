@@ -1,4 +1,5 @@
 import pymysql
+from flask import json
 from config import db_config  # Adjust import according to your database config
 
 def connect_to_database():
@@ -33,6 +34,7 @@ def get_escola_id(codigo_de_escola):
 
 def insert_data_to_db(json_data, db_config):
     connection = pymysql.connect(**db_config)
+    print(json.dumps(json_data, indent=4))    
     try:
         with connection.cursor() as cursor:
             # Insert into the main table (assuming it's named `ofertas`)
@@ -78,9 +80,7 @@ def insert_data_to_db(json_data, db_config):
                     id_vinculo = get_id_contrato(tipo_de_vinculo)
                     nome_escola = preferencia['nomeEscola']
                     codigo_de_escola = preferencia['codigoDeEscola']
-                    print(codigo_de_escola)
                     id_escola = get_escola_id(codigo_de_escola)
-                    print(id_escola)
                     ordem_de_preferencia = preferencia['ordemDePreferencia']
                     
                     bolsa_query = """
