@@ -1,7 +1,7 @@
 import requests
 import time
 from datetime import datetime, timedelta
-from config import db_config,CLIENT_ID,CLIENT_SECRET,AUTH_URL,DATA_URL_TEMPLATE
+from config import db_config,CLIENT_ID,CLIENT_SECRET,AUTH_URL
 from db_operations.admin.api_info import insert_data_to_db 
 
 # Global variable to store the token and its expiry time
