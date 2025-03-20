@@ -60,6 +60,10 @@ def fetch_data_with_token(token):
     """
     Fetch data from the second API using the access token and insert into DB.
     """
+    if not token:
+        print("Invalid token, unable to fetch data.")
+        return
+
     try:
         # Format the URL with the token
         formatted_url = DATA_URL_TEMPLATE.format(token=token)
@@ -76,6 +80,7 @@ def fetch_data_with_token(token):
         if response.status_code == 200:
             # Get the JSON data from the response
             data = response.json()
+            print(data)
             # Insert the data into the database
             insert_data_to_db(data, db_config)
         else:
@@ -84,7 +89,7 @@ def fetch_data_with_token(token):
     
     except Exception as e:
         print(f"Error while fetching data: {str(e)}")
-
+        
 def main():
     while True:
         # Step 1: Get the access token (either reuse or refresh)
