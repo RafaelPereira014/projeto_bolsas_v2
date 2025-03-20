@@ -4,44 +4,34 @@ from datetime import datetime, timedelta
 from config import db_config,CLIENT_ID,CLIENT_SECRET,AUTH_URL
 from db_operations.admin.api_info import insert_data_to_db 
 
-# Global variable to store the token and its expiry time
 access_token = None
 token_expiry = None
 
 def get_access_token():
-    """
-    Fetch the access token from the authentication API.
-    """
+    
     global access_token, token_expiry
     
     try:
-        # If there's a valid token, return it
         if access_token and token_expiry > datetime.now():
             print("Using existing access token.")
             return access_token
 
-        # Prepare the payload for authentication
         auth_payload = {
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET
         }
-        # Set the headers for the POST request
         auth_headers = {
             "Content-Type": "application/json"
         }
  
-        # Send the POST request to get the token
-        auth_response = requests.post(AUTH_URL, json=auth_payload, headers=auth_headers)
-        # Check if the request was successful
+        auth_response = requests.post(AUTH_URL, json=auth_payload, headers=auth_headers,verify=False)
         if auth_response.status_code == 200:
-            # Extract and return the access token
             auth_data = auth_response.json()
             access_token = auth_data.get("Acess_Token")
             if not access_token:
                 print("Access token not found in the authentication response.")
                 return None
             
-            # Assuming the response also gives the token's expiry time in seconds
             expiry_in_seconds = auth_data.get("expires_in", 3600)  # Default expiry time of 1 hour
             token_expiry = datetime.now() + timedelta(seconds=expiry_in_seconds)
             print(f"New access token acquired. Expiry: {token_expiry}")
@@ -72,7 +62,7 @@ def fetch_data_with_token(token):
         }
         
         # Send the GET request
-        response = requests.get(formatted_url, headers=headers)
+        response = requests.get(formatted_url, headers=headers,verify=False)
         
         # Check if the request was successful
         if response.status_code == 200:
