@@ -230,7 +230,7 @@ def get_escola_info(escola_nome):
     cursor = connection.cursor()
     try:
         query = """
-            SELECT * FROM Escola WHERE nome = %s
+            SELECT * FROM escola WHERE nome = %s
         """
         cursor.execute(query, (escola_nome,))
         escola_info = cursor.fetchone()  # Fetch the first matching record
