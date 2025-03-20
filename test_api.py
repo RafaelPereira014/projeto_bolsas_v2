@@ -57,9 +57,7 @@ def get_access_token():
 
 
 def fetch_data_with_token(token):
-    """
-    Fetch data from the second API using the access token and insert into DB.
-    """
+    
     if not token:
         print("Invalid token, unable to fetch data.")
         return
@@ -67,6 +65,7 @@ def fetch_data_with_token(token):
     try:
         # Format the URL with the token
         formatted_url = DATA_URL_TEMPLATE.format(token=token)
+        print(formatted_url)
         
         # Set the headers for the GET request
         headers = {
@@ -75,6 +74,7 @@ def fetch_data_with_token(token):
         
         # Send the GET request
         response = requests.get(formatted_url, headers=headers)
+        print(response)
         
         # Check if the request was successful
         if response.status_code == 200:
@@ -102,7 +102,7 @@ def main():
             print("Could not retrieve access token. Exiting.")
         
         # Wait for 30 minutes before the next run
-        time.sleep(1800)  # 30 minutes = 1800 seconds
+        time.sleep(1800)  
 
 
 # Check if the script is being run directly (not imported)
