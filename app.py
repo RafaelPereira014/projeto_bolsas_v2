@@ -11,7 +11,7 @@ from datetime import date
 from openpyxl import Workbook
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-from config import AUTH_URL, DATA_URL_TEMPLATE, CLIENT_ID, CLIENT_SECRET, db_config
+from config import AUTH_URL, CLIENT_ID, CLIENT_SECRET, db_config
 from db_operations.notifications import send_email_on_selection
 from db_operations.selection.db_selection import *
 from db_operations.consulting.db_consulting import *
@@ -764,33 +764,33 @@ def get_token():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/receive-data', methods=['POST'])
-def receive_data():
-    try:
-        request_data = request.get_json()
-        access_token = request_data.get("access_token")
+# @app.route('/receive-data', methods=['POST'])
+# def receive_data():
+#     try:
+#         request_data = request.get_json()
+#         access_token = request_data.get("access_token")
         
-        if not access_token:
-            return jsonify({"error": "Access token is required"}), 400
+#         if not access_token:
+#             return jsonify({"error": "Access token is required"}), 400
 
-        data_url = DATA_URL_TEMPLATE.format(access_token)
-        data_response = requests.get(data_url)
+#         data_url = DATA_URL_TEMPLATE.format(access_token)
+#         data_response = requests.get(data_url)
 
-        if data_response.status_code != 200:
-            return jsonify({
-                "error": "Failed to fetch data",
-                "details": data_response.text
-            }), data_response.status_code
+#         if data_response.status_code != 200:
+#             return jsonify({
+#                 "error": "Failed to fetch data",
+#                 "details": data_response.text
+#             }), data_response.status_code
 
-        json_data = data_response.json()
-        if not json_data:
-            return jsonify({"error": "No data received from the API"}), 400
+#         json_data = data_response.json()
+#         if not json_data:
+#             return jsonify({"error": "No data received from the API"}), 400
 
-        insert_data_to_db(json_data, db_config)
-        return jsonify({"message": "Data successfully inserted"}), 200
+#         insert_data_to_db(json_data, db_config)
+#         return jsonify({"message": "Data successfully inserted"}), 200
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
         
 
 
