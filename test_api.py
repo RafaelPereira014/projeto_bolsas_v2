@@ -85,10 +85,6 @@ def fetch_data_with_token(token):
     except Exception as e:
         print(f"Error while fetching data: {str(e)}")
 
-
-
-
-
 def main():
     while True:
         # Step 1: Get the access token (either reuse or refresh)
