@@ -2,13 +2,13 @@ import requests
 import time
 import os
 from datetime import datetime, timedelta
-from config import db_config,CLIENT_ID,CLIENT_SECRET,AUTH_URL
+from config import db_config,CLIENT_ID,CLIENT_SECRET,AUTH_URL,REQUESTS_CA_BUNDLE
 from db_operations.admin.api_info import insert_data_to_db 
 
 
 access_token = None
 token_expiry = None
-os.environ["REQUESTS_CA_BUNDLE"] = "/etc/ssl/certs/ca-certificates.crt"
+os.environ["REQUESTS_CA_BUNDLE"] = REQUESTS_CA_BUNDLE
 
 def get_access_token():
     
