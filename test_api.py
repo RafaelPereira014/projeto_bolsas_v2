@@ -64,9 +64,7 @@ def fetch_data_with_token(token):
 
     try:
         # Format the URL with the token
-        print("asdsad")
-        formatted_url = DATA_URL_TEMPLATE.format(token=token)
-        print(formatted_url)
+        formatted_url = DATA_URL_TEMPLATE
         
         # Set the headers for the GET request
         headers = {
@@ -75,7 +73,6 @@ def fetch_data_with_token(token):
         
         # Send the GET request
         response = requests.get(formatted_url, headers=headers)
-        print(response)
         
         # Check if the request was successful
         if response.status_code == 200:
