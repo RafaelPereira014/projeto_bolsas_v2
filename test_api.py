@@ -64,6 +64,7 @@ def fetch_data_with_token(token):
 
     try:
         # Format the URL with the token
+        print("asdsad")
         formatted_url = DATA_URL_TEMPLATE.format(token=token)
         print(formatted_url)
         
